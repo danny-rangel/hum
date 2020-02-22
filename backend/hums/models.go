@@ -4,6 +4,7 @@ import (
 	"github.com/danny-rangel/web/hum/backend/config"
 )
 
+// Hum type defines a Hum Struct
 type Hum struct {
 	Username string `json:"username"`
 	ID       string `json:"id"`
@@ -12,6 +13,7 @@ type Hum struct {
 	Posted   string `json:"posted"`
 }
 
+// AllHums fetches all hum data from db
 func AllHums() ([]Hum, error) {
 	rows, err := config.DB.Query("SELECT users.username, hums.id, hums.content, hums.likes, hums.posted FROM users INNER JOIN hums on users.id = hums.user_id")
 	if err != nil {

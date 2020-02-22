@@ -11,6 +11,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
+// DB variable used for all queries
 var DB *sql.DB
 
 func init() {
