@@ -3,6 +3,7 @@ package users
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/danny-rangel/web/hum/backend/config"
 	_ "github.com/danny-rangel/web/hum/backend/config"
@@ -36,7 +37,10 @@ func RegisterUser(r *http.Request) (Credentials, error) {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(creds.Password), 8)
 
-	_, err = config.DB.Exec("INSERT INTO users (username, email, password) VALUES ($1, $2, $3)", creds.Username, creds.Email, string(hash))
+	// TODO: Check and make sure there is no
+	// other user with the same username or email
+
+	_, err = config.DB.Exec("INSERT INTO users (username, email, password, joined) VALUES ($1, $2, $3, $4)", creds.Username, creds.Email, string(hash), time.Now())
 	if err != nil {
 		return creds, errors.New("500. Internal Server Error." + err.Error())
 	}
