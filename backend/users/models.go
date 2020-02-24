@@ -145,6 +145,17 @@ func Follow(r *http.Request, userID string) error {
 	return nil
 }
 
-func Unfollow() {
+func Unfollow(r *http.Request, userID string) error {
+	vars := mux.Vars(r)
+	followeeUsername := vars["username"]
 
+	followee, err := GetUserInfo("", followeeUsername)
+
+	_, err = config.DB.Exec("DELETE FROM follow WHERE follower_id = $1 AND following_id = $2", userID, followee.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

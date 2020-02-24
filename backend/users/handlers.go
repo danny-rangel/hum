@@ -135,11 +135,19 @@ func UnfollowUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// userID, err := middleware.Auth(w, r)
+	userID, err := middleware.Auth(w, r)
 
-	// if err != nil {
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// 	return
-	// }
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
 
+	err = Unfollow(r, userID)
+
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
