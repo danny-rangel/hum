@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"time"
 
@@ -33,8 +34,21 @@ func RegisterUser(r *http.Request) (Credentials, error) {
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(creds.Password), 8)
 
-	// TODO: Check and make sure there is no
-	// other user with the same username or email
+	rows, err := config.DB.Query("SELECT EXISTS(SELECT 1 FROM users WHERE users.username=$1)", creds.Username)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		var exists bool
+		if err := rows.Scan(&exists); err != nil {
+			log.Fatal(err)
+		}
+
+		if exists {
+			return creds, errors.New("400. Bad Request. Username taken")
+		}
+	}
 
 	_, err = config.DB.Exec("INSERT INTO users (username, password, joined) VALUES ($1, $2, $3)", creds.Username, string(hash), time.Now())
 	if err != nil {
