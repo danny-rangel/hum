@@ -20,11 +20,12 @@ type Credentials struct {
 }
 
 type User struct {
-	ID       string `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	NumPosts int    `json:"numposts"`
-	Joined   string `json:"joined"`
+	ID        string `json:"id"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	NumPosts  int    `json:"numposts"`
+	Joined    string `json:"joined"`
+	Followers int    `json:"followers"`
 }
 
 func GetUserInfo(userID string, username string) (User, error) {
@@ -34,9 +35,9 @@ func GetUserInfo(userID string, username string) (User, error) {
 	if userID != "" {
 		fmt.Println("HI")
 		fmt.Println(userID)
-		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined FROM users WHERE users.id = $1", userID)
+		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers FROM users WHERE users.id = $1", userID)
 	} else {
-		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined FROM users WHERE users.username = $1", username)
+		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers FROM users WHERE users.username = $1", username)
 	}
 
 	if err != nil {
@@ -48,7 +49,7 @@ func GetUserInfo(userID string, username string) (User, error) {
 	var fetchedUser User
 
 	for rows.Next() {
-		err := rows.Scan(&fetchedUser.ID, &fetchedUser.Username, &fetchedUser.NumPosts, &fetchedUser.Joined)
+		err := rows.Scan(&fetchedUser.ID, &fetchedUser.Username, &fetchedUser.NumPosts, &fetchedUser.Joined, &fetchedUser.Followers)
 		if err != nil {
 			return User{}, err
 		}
@@ -137,7 +138,11 @@ func Follow(r *http.Request, userID string) error {
 	followee, err := GetUserInfo("", followeeUsername)
 
 	_, err = config.DB.Exec("INSERT INTO follow (FOLLOWER_ID,FOLLOWING_ID) VALUES ($1, $2)", userID, followee.ID)
+	if err != nil {
+		return err
+	}
 
+	_, err = config.DB.Exec("UPDATE users SET followers = followers + 1 WHERE users.id = $1", followee.ID)
 	if err != nil {
 		return err
 	}
@@ -153,6 +158,11 @@ func Unfollow(r *http.Request, userID string) error {
 
 	_, err = config.DB.Exec("DELETE FROM follow WHERE follower_id = $1 AND following_id = $2", userID, followee.ID)
 
+	if err != nil {
+		return err
+	}
+
+	_, err = config.DB.Exec("UPDATE users SET followers = followers - 1 WHERE users.id = $1", followee.ID)
 	if err != nil {
 		return err
 	}

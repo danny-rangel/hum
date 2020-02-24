@@ -19,9 +19,9 @@ func main() {
 	r.HandleFunc("/api/hums", hums.GetFollowerHums)
 	r.HandleFunc("/api/new/hums", hums.NewHum)
 	r.HandleFunc("/api/delete/hums/{humID}", hums.DeleteHum)
-	// r.HandleFunc("/api/users/followers", hums.)
 	r.HandleFunc("/api/follow/{username}", users.FollowUser)
 	r.HandleFunc("/api/unfollow/{username}", users.UnfollowUser)
+	// r.HandleFunc("/api/users/followers", hums.GetFollowers)
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
