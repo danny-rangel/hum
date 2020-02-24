@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/danny-rangel/web/hum/backend/config"
+	"github.com/danny-rangel/web/hum/backend/middleware"
 	"github.com/google/uuid"
 )
 
@@ -38,7 +39,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Create a new random session token
 	sessionToken := uuid.New().String()
 	// Set the token in the redis cache, along with the user whom it represents
-	err = config.Cache.Set(sessionToken, creds.Username, 336*time.Hour).Err()
+	err = config.Cache.Set(sessionToken, creds.ID, 336*time.Hour).Err()
 	if err != nil {
 		// If there is an error in setting the cache, return an internal server error
 		w.WriteHeader(http.StatusInternalServerError)
@@ -103,4 +104,42 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 	})
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func FollowUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, err := middleware.Auth(w, r)
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	err = Follow(r, userID)
+
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func UnfollowUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	// userID, err := middleware.Auth(w, r)
+
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusUnauthorized)
+	// 	return
+	// }
+
 }

@@ -45,8 +45,8 @@ func UserHums(r *http.Request) ([]Hum, error) {
 }
 
 // FollowerHums fetches all hums for currently followed users
-func FollowerHums(username string) ([]Hum, error) {
-	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.follower_id INNER JOIN hums on hums.user_id = follow.following_id WHERE users.username = $1", username)
+func FollowerHums(userID string) ([]Hum, error) {
+	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.follower_id INNER JOIN hums on hums.user_id = follow.following_id WHERE users.id = $1", userID)
 
 	if err != nil {
 		return nil, err
@@ -68,10 +68,10 @@ func FollowerHums(username string) ([]Hum, error) {
 	return hums, nil
 }
 
-func AddHum(username string, r *http.Request) (Hum, error) {
+func AddHum(userID string, r *http.Request) (Hum, error) {
 	content := r.FormValue("content")
 
-	rows, err := config.DB.Query("SELECT users.id FROM users WHERE users.username = $1", username)
+	rows, err := config.DB.Query("SELECT users.username FROM users WHERE users.id = $1", userID)
 
 	if err != nil {
 		return Hum{}, err
@@ -79,10 +79,10 @@ func AddHum(username string, r *http.Request) (Hum, error) {
 
 	defer rows.Close()
 
-	var userID int
+	var username string
 
 	for rows.Next() {
-		err := rows.Scan(&userID)
+		err := rows.Scan(&username)
 		if err != nil {
 			return Hum{}, err
 		}
@@ -98,14 +98,15 @@ func AddHum(username string, r *http.Request) (Hum, error) {
 	return Hum{}, nil
 }
 
-func DeleteHum() {
+func Delete(r *http.Request, userID string) error {
+	vars := mux.Vars(r)
+	humID := vars["humID"]
 
-}
+	_, err := config.DB.Exec("DELETE FROM hums WHERE hums.id = $1 AND hums.user_id = $2", humID, userID)
 
-func Follow() {
+	if err != nil {
+		panic(err)
+	}
 
-}
-
-func Unfollow() {
-
+	return nil
 }

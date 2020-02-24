@@ -30,14 +30,14 @@ func GetFollowerHums(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username, err := middleware.Auth(w, r)
+	userID, err := middleware.Auth(w, r)
 
-	if err != nil || username == "" {
+	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	hums, err := FollowerHums(username)
+	hums, err := FollowerHums(userID)
 
 	if err != nil {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
@@ -53,14 +53,37 @@ func NewHum(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	username, err := middleware.Auth(w, r)
+	userID, err := middleware.Auth(w, r)
 
-	if err != nil || username == "" {
+	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 
-	_, err = AddHum(username, r)
+	_, err = AddHum(userID, r)
+
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func DeleteHum(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "DELETE" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID, err := middleware.Auth(w, r)
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	err = Delete(r, userID)
 
 	if err != nil {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)

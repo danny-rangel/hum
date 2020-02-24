@@ -1,16 +1,20 @@
 package users
 
 import (
+	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
 
 	"github.com/danny-rangel/web/hum/backend/config"
+	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Credentials struct {
+	ID       string `json:"id"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
@@ -21,6 +25,37 @@ type User struct {
 	Password string `json:"password"`
 	NumPosts int    `json:"numposts"`
 	Joined   string `json:"joined"`
+}
+
+func GetUserInfo(userID string, username string) (User, error) {
+	var rows *sql.Rows
+	var err error
+
+	if userID != "" {
+		fmt.Println("HI")
+		fmt.Println(userID)
+		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined FROM users WHERE users.id = $1", userID)
+	} else {
+		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined FROM users WHERE users.username = $1", username)
+	}
+
+	if err != nil {
+		return User{}, err
+	}
+
+	defer rows.Close()
+
+	var fetchedUser User
+
+	for rows.Next() {
+		err := rows.Scan(&fetchedUser.ID, &fetchedUser.Username, &fetchedUser.NumPosts, &fetchedUser.Joined)
+		if err != nil {
+			return User{}, err
+		}
+		break
+	}
+
+	return fetchedUser, nil
 }
 
 func RegisterUser(r *http.Request) (Credentials, error) {
@@ -67,7 +102,7 @@ func LoginUser(r *http.Request) (Credentials, error) {
 		return creds, errors.New("400. Bad Request. Fields can't be empty")
 	}
 
-	rows, err := config.DB.Query("SELECT users.username, users.password FROM users WHERE users.username = $1", creds.Username)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.password FROM users WHERE users.username = $1", creds.Username)
 
 	if err != nil {
 		return creds, err
@@ -77,7 +112,7 @@ func LoginUser(r *http.Request) (Credentials, error) {
 	check := Credentials{}
 
 	for rows.Next() {
-		err = rows.Scan(&check.Username, &check.Password)
+		err = rows.Scan(&check.ID, &check.Username, &check.Password)
 		break
 	}
 
@@ -92,5 +127,24 @@ func LoginUser(r *http.Request) (Credentials, error) {
 		return creds, errors.New("Unauthorized")
 	}
 
-	return creds, nil
+	return check, nil
+}
+
+func Follow(r *http.Request, userID string) error {
+	vars := mux.Vars(r)
+	followeeUsername := vars["username"]
+
+	followee, err := GetUserInfo("", followeeUsername)
+
+	_, err = config.DB.Exec("INSERT INTO follow (FOLLOWER_ID,FOLLOWING_ID) VALUES ($1, $2)", userID, followee.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Unfollow() {
+
 }

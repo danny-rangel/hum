@@ -24,7 +24,7 @@ func Auth(w http.ResponseWriter, r *http.Request) (string, error) {
 	sessionToken := c.Value
 
 	// We then get the name of the user from our cache, where we set the session token
-	username, err := config.Cache.Get(sessionToken).Result()
+	userID, err := config.Cache.Get(sessionToken).Result()
 
 	if err != nil {
 		// If there is an error fetching from cache, return an internal server error status
@@ -32,5 +32,5 @@ func Auth(w http.ResponseWriter, r *http.Request) (string, error) {
 		return "", err
 	}
 
-	return username, nil
+	return userID, nil
 }
