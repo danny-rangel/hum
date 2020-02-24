@@ -1,7 +1,6 @@
 package users
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -38,22 +37,69 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// Create a new random session token
 	sessionToken := uuid.New().String()
-	// Set the token in the cache, along with the user whom it represents
-	// The token has an expiry time of 120 seconds
-	err = config.Cache.Set(creds.Username, sessionToken, 10*time.Second).Err()
+	// Set the token in the redis cache, along with the user whom it represents
+	err = config.Cache.Set(sessionToken, creds.Username, 336*time.Hour).Err()
 	if err != nil {
-		fmt.Println(err)
 		// If there is an error in setting the cache, return an internal server error
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	// Finally, we set the client cookie for "session_token" as the session token we just generated
-	// we also set an expiry time of 120 seconds, the same as the cache
+	// Set the client cookie for "session_token" as the session token we just generated
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
-		Expires: time.Now().Add(10 * time.Second),
+		Expires: time.Now().Add(336 * time.Hour),
+	})
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Get the cookie
+	c, err := r.Cookie("session_token")
+
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		// For any other type of error, return a bad request status
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Get the value within the cookie
+	sessionToken := c.Value
+
+	// Check and make sure the session is in the redis cache
+	_, err = config.Cache.Get(sessionToken).Result()
+
+	if err != nil {
+		// If the session is not present in the cache, return an unauthorized error
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	// We then delete the session from the cache
+	res, err := config.Cache.Del(sessionToken).Result()
+
+	// Return an error if we can't delete the key
+	if res != 1 {
+		panic(err)
+	}
+
+	// Send back an expired cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:   "session_token",
+		Value:  "",
+		MaxAge: -1,
 	})
 
 	w.WriteHeader(http.StatusOK)

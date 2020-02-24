@@ -13,6 +13,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/login", users.Login)
+	r.HandleFunc("/logout", users.Logout)
 	r.HandleFunc("/signup", users.SignUp)
 	r.HandleFunc("/api/hums", hums.Index)
 
