@@ -2,6 +2,7 @@ package hums
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/danny-rangel/web/hum/backend/config"
 	"github.com/gorilla/mux"
@@ -9,11 +10,12 @@ import (
 
 // Hum type defines a Hum Struct
 type Hum struct {
-	Username string `json:"username"`
 	ID       string `json:"id"`
 	Content  string `json:"content"`
 	Likes    int    `json:"likes"`
 	Posted   string `json:"posted"`
+	UserID   string `json:"user_id"`
+	Username string `json:"username"`
 }
 
 // UserHums fetches all hums for specific user
@@ -21,7 +23,7 @@ func UserHums(r *http.Request) ([]Hum, error) {
 	vars := mux.Vars(r)
 	username := vars["username"]
 
-	rows, err := config.DB.Query("SELECT users.username, hums.id, hums.content, hums.likes, hums.posted FROM users INNER JOIN hums on users.id = hums.user_id WHERE users.username=$1", username)
+	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, users.ID, users.username FROM users INNER JOIN hums on users.id = hums.user_id WHERE users.username=$1", username)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +32,7 @@ func UserHums(r *http.Request) ([]Hum, error) {
 	hums := make([]Hum, 0)
 	for rows.Next() {
 		hum := Hum{}
-		err := rows.Scan(&hum.Username, &hum.ID, &hum.Content, &hum.Likes, &hum.Posted) // order matters
+		err := rows.Scan(&hum.ID, &hum.Content, &hum.Likes, &hum.Posted, &hum.UserID, &hum.Username) // order matters
 		if err != nil {
 			return nil, err
 		}
@@ -40,4 +42,70 @@ func UserHums(r *http.Request) ([]Hum, error) {
 		return nil, err
 	}
 	return hums, nil
+}
+
+// FollowerHums fetches all hums for currently followed users
+func FollowerHums(username string) ([]Hum, error) {
+	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.follower_id INNER JOIN hums on hums.user_id = follow.following_id WHERE users.username = $1", username)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	hums := make([]Hum, 0)
+	for rows.Next() {
+		hum := Hum{}
+		err := rows.Scan(&hum.ID, &hum.Content, &hum.Likes, &hum.Posted, &hum.UserID, &hum.Username) // order matters
+		if err != nil {
+			return nil, err
+		}
+		hums = append(hums, hum)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return hums, nil
+}
+
+func AddHum(username string, r *http.Request) (Hum, error) {
+	content := r.FormValue("content")
+
+	rows, err := config.DB.Query("SELECT users.id FROM users WHERE users.username = $1", username)
+
+	if err != nil {
+		return Hum{}, err
+	}
+
+	defer rows.Close()
+
+	var userID int
+
+	for rows.Next() {
+		err := rows.Scan(&userID)
+		if err != nil {
+			return Hum{}, err
+		}
+		break
+	}
+
+	_, err = config.DB.Exec("INSERT INTO hums (content, posted, username, user_id) VALUES ($1, $2, $3, $4)", content, time.Now(), username, userID)
+
+	if err != nil {
+		return Hum{}, err
+	}
+
+	return Hum{}, nil
+}
+
+func DeleteHum() {
+
+}
+
+func Follow() {
+
+}
+
+func Unfollow() {
+
 }
