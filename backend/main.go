@@ -15,7 +15,7 @@ func main() {
 	r.HandleFunc("/login", users.Login)
 	r.HandleFunc("/logout", users.Logout)
 	r.HandleFunc("/signup", users.SignUp)
-	r.HandleFunc("/api/hums", hums.Index)
+	r.HandleFunc("/api/hums/{username}", hums.Index)
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

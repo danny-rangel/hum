@@ -1,4 +1,4 @@
-package auth
+package middleware
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 	"github.com/danny-rangel/web/hum/backend/config"
 )
 
-func auth(w http.ResponseWriter, r *http.Request) (string, error) {
+func Auth(w http.ResponseWriter, r *http.Request) (string, error) {
 	// We can obtain the session token from the requests cookies, which come with every request
 	c, err := r.Cookie("session_token")
 	if err != nil {
@@ -24,7 +24,7 @@ func auth(w http.ResponseWriter, r *http.Request) (string, error) {
 	sessionToken := c.Value
 
 	// We then get the name of the user from our cache, where we set the session token
-	response, err := config.Cache.Get(sessionToken).Result()
+	username, err := config.Cache.Get(sessionToken).Result()
 
 	if err != nil {
 		// If there is an error fetching from cache, return an internal server error status
@@ -32,5 +32,5 @@ func auth(w http.ResponseWriter, r *http.Request) (string, error) {
 		return "", err
 	}
 
-	return response, nil
+	return username, nil
 }
