@@ -8,6 +8,7 @@ import (
 	"github.com/danny-rangel/web/hum/backend/config"
 	"github.com/danny-rangel/web/hum/backend/middleware"
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 )
 
 func FetchUser(w http.ResponseWriter, r *http.Request) {
@@ -19,6 +20,25 @@ func FetchUser(w http.ResponseWriter, r *http.Request) {
 	user, _ := CurrentUser(r)
 
 	if user.ID == "" {
+		return
+	}
+
+	json.NewEncoder(w).Encode(user)
+}
+
+func FetchProfile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	vars := mux.Vars(r)
+	username := vars["username"]
+
+	user, err := GetUserInfo("", username)
+
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
 	}
 

@@ -16,6 +16,7 @@ func main() {
 	r.HandleFunc("/api/logout", users.Logout)
 	r.HandleFunc("/api/signup", users.SignUp)
 	r.HandleFunc("/api/user", users.FetchUser)
+	r.HandleFunc("/api/user/{username}", users.FetchProfile)
 	r.HandleFunc("/api/hums/{username}", hums.GetUserHums)
 	r.HandleFunc("/api/hums", hums.GetFollowerHums)
 	r.HandleFunc("/api/new/hums", hums.NewHum)

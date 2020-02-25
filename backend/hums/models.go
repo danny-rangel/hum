@@ -104,6 +104,12 @@ func AddHum(userID string, r *http.Request) (Hum, error) {
 		return Hum{}, err
 	}
 
+	_, err = config.DB.Exec("UPDATE users SET numposts = numposts + 1 WHERE users.id = $1", userID)
+
+	if err != nil {
+		return Hum{}, err
+	}
+
 	return Hum{}, nil
 }
 
@@ -115,6 +121,12 @@ func Delete(r *http.Request, userID string) error {
 
 	if err != nil {
 		panic(err)
+	}
+
+	_, err = config.DB.Exec("UPDATE users SET numposts = numposts - 1 WHERE users.id = $1", userID)
+
+	if err != nil {
+		return err
 	}
 
 	return nil

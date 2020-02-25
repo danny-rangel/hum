@@ -6,7 +6,17 @@ import HumList from '../components/Hums/HumList';
 
 const Profile = () => {
     const [hums, setHums] = useState(null);
+    const [user, setUser] = useState(null);
     const { username } = useParams();
+
+    const fetchProfile = async () => {
+        try {
+            const res = await axios.get(`/api/user/${username}`);
+            setUser(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const fetchHums = async () => {
         try {
@@ -19,12 +29,20 @@ const Profile = () => {
 
     useEffect(() => {
         fetchHums();
+        fetchProfile();
     }, []);
 
     return (
         <div>
             <div>
-                <h1>{username}</h1>
+                {user ? (
+                    <>
+                        <h1>{user.username}</h1>
+                        <h4>hums:{user.numposts}</h4>
+                        <h4>followers:{user.followers}</h4>
+                        <h4>following:{user.following}</h4>
+                    </>
+                ) : null}
             </div>
             <HumList hums={hums} />
         </div>
