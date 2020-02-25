@@ -23,9 +23,11 @@ const Nav = () => {
         <div>
             <Link to="/">hum</Link>
             <span>
-                {authContext.authState.auth
-                    ? authContext.authState.auth.username
-                    : null}
+                {authContext.authState.auth ? (
+                    <Link to={authContext.authState.auth.username}>
+                        {authContext.authState.auth.username}
+                    </Link>
+                ) : null}
             </span>
             <span>
                 {authContext.authState.auth ? (

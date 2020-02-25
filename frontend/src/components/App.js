@@ -1,11 +1,12 @@
 import React, { useEffect, useReducer } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 
 import Home from '../pages/Home';
 import SignUp from '../pages/SignUp';
 import Login from '../pages/Login';
+import Profile from '../pages/Profile';
 import Nav from '../components/Nav';
 
 export const AuthContext = React.createContext();
@@ -60,21 +61,7 @@ const App = () => {
                 }}
             >
                 <div className="App">
-                    <Nav></Nav>
-                    <nav className="App-header">
-                        <ul>
-                            <li>
-                                <Link to="/">Home</Link>
-                            </li>
-                            <li>
-                                <Link to="/signup">SignUp</Link>
-                            </li>
-                            <li>
-                                <Link to="/login">Login</Link>
-                            </li>
-                        </ul>
-                    </nav>
-
+                    <Nav />
                     <Switch>
                         <Route path="/" exact>
                             <Home />
@@ -84,6 +71,9 @@ const App = () => {
                         </Route>
                         <Route path="/login" exact>
                             <Login />
+                        </Route>
+                        <Route path="/:username" exact>
+                            <Profile />
                         </Route>
                     </Switch>
                 </div>
