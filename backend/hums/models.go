@@ -1,6 +1,8 @@
 package hums
 
 import (
+	"errors"
+	"log"
 	"net/http"
 	"time"
 
@@ -114,7 +116,23 @@ func Delete(r *http.Request, userID string) error {
 func Like(r *http.Request, userID string) error {
 	humID := r.FormValue("humID")
 
-	_, err := config.DB.Exec("INSERT INTO likes (USER_ID,HUM_ID) VALUES ($1, $2)", userID, humID)
+	rows, err := config.DB.Query("SELECT EXISTS(SELECT 1 FROM likes WHERE likes.user_id=$1 AND likes.hum_id=$2)", userID, humID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for rows.Next() {
+		var exists bool
+		if err := rows.Scan(&exists); err != nil {
+			log.Fatal(err)
+		}
+
+		if exists {
+			return errors.New("400. Bad Request. Already liked")
+		}
+	}
+
+	_, err = config.DB.Exec("INSERT INTO likes (USER_ID,HUM_ID) VALUES ($1, $2)", userID, humID)
 	if err != nil {
 		return err
 	}
