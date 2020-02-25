@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/danny-rangel/web/hum/backend/config"
 	"github.com/gorilla/mux"
@@ -26,7 +25,7 @@ func UserHums(r *http.Request) ([]Hum, error) {
 	vars := mux.Vars(r)
 	username := vars["username"]
 
-	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, users.ID, users.username FROM users INNER JOIN hums on users.id = hums.user_id WHERE users.username=$1", username)
+	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, users.ID, users.username FROM users INNER JOIN hums on users.id = hums.user_id WHERE users.username=$1 ORDER BY Posted DESC", username)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +48,7 @@ func UserHums(r *http.Request) ([]Hum, error) {
 
 // FollowerHums fetches all hums for currently followed users
 func FollowerHums(userID string) ([]Hum, error) {
-	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.follower_id INNER JOIN hums on hums.user_id = follow.following_id WHERE users.id = $1", userID)
+	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.follower_id INNER JOIN hums on hums.user_id = follow.following_id WHERE users.id = $1 ORDER BY Posted DESC", userID)
 
 	if err != nil {
 		return nil, err
@@ -98,7 +97,7 @@ func AddHum(userID string, r *http.Request) (Hum, error) {
 		break
 	}
 
-	_, err = config.DB.Exec("INSERT INTO hums (content, posted, username, user_id) VALUES ($1, $2, $3, $4)", h.Content, time.Now(), username, userID)
+	_, err = config.DB.Exec("INSERT INTO hums (content, username, user_id) VALUES ($1, $2, $3)", h.Content, username, userID)
 
 	if err != nil {
 		return Hum{}, err

@@ -28,8 +28,8 @@ const Profile = () => {
     };
 
     useEffect(() => {
-        fetchHums();
         fetchProfile();
+        fetchHums();
     }, []);
 
     return (
@@ -37,6 +37,7 @@ const Profile = () => {
             <div>
                 {user ? (
                     <>
+                        <img src={user.avi} alt="avi"></img>
                         <h1>{user.username}</h1>
                         <h4>hums:{user.numposts}</h4>
                         <h4>followers:{user.followers}</h4>

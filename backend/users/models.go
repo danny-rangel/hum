@@ -6,7 +6,6 @@ import (
 	"errors"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/danny-rangel/web/hum/backend/config"
 	"github.com/gorilla/mux"
@@ -23,9 +22,10 @@ type User struct {
 	ID        string `json:"id"`
 	Username  string `json:"username"`
 	NumPosts  int    `json:"numposts"`
-	Joined    string `json:"joined"`
+	AVI       string `json:"avi"`
 	Followers int    `json:"followers"`
 	Following int    `json:"following"`
+	Joined    string `json:"joined"`
 }
 
 func CurrentUser(r *http.Request) (User, error) {
@@ -56,9 +56,9 @@ func GetUserInfo(userID string, username string) (User, error) {
 	var err error
 
 	if userID != "" {
-		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers FROM users WHERE users.id = $1", userID)
+		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.avi, users.followers, users.following, users.joined FROM users WHERE users.id = $1", userID)
 	} else {
-		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers FROM users WHERE users.username = $1", username)
+		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.avi, users.followers, users.following, users.joined FROM users WHERE users.username = $1", username)
 	}
 
 	if err != nil {
@@ -70,7 +70,7 @@ func GetUserInfo(userID string, username string) (User, error) {
 	var fetchedUser User
 
 	for rows.Next() {
-		err := rows.Scan(&fetchedUser.ID, &fetchedUser.Username, &fetchedUser.NumPosts, &fetchedUser.Joined, &fetchedUser.Followers)
+		err := rows.Scan(&fetchedUser.ID, &fetchedUser.Username, &fetchedUser.NumPosts, &fetchedUser.AVI, &fetchedUser.Followers, &fetchedUser.Following, &fetchedUser.Joined)
 		if err != nil {
 			return User{}, err
 		}
@@ -111,7 +111,7 @@ func RegisterUser(r *http.Request) (Credentials, error) {
 		}
 	}
 
-	_, err = config.DB.Exec("INSERT INTO users (username, password, joined) VALUES ($1, $2, $3)", creds.Username, string(hash), time.Now())
+	_, err = config.DB.Exec("INSERT INTO users (username, password) VALUES ($1, $2)", creds.Username, string(hash))
 	if err != nil {
 		return creds, errors.New("500. Internal Server Error." + err.Error())
 	}
