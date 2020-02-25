@@ -5,6 +5,10 @@
     color: white;
 }
 
+a {
+    color: white;
+}
+
 .App-header {
     min-height: 100px;
     display: flex;

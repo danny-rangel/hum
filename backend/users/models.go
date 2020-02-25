@@ -169,12 +169,13 @@ func Follow(r *http.Request, userID string) error {
 	followeeUsername := vars["username"]
 
 	followee, err := GetUserInfo("", followeeUsername)
+	follower, err := GetUserInfo(userID, "")
 
 	if userID == followee.ID {
 		return errors.New("400. Bad Request. Can't follow yourself")
 	}
 
-	rows, err := config.DB.Query("SELECT EXISTS(SELECT 1 FROM follow WHERE follow.follower_id=$1 AND follow.following_id=$2)", userID, followee.ID)
+	rows, err := config.DB.Query("SELECT EXISTS(SELECT 1 FROM follow WHERE follow.from_id=$1 AND follow.to_id=$2)", userID, followee.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -190,7 +191,7 @@ func Follow(r *http.Request, userID string) error {
 		}
 	}
 
-	_, err = config.DB.Exec("INSERT INTO follow (FOLLOWER_ID,FOLLOWING_ID) VALUES ($1, $2)", userID, followee.ID)
+	_, err = config.DB.Exec("INSERT INTO follow (FROM_ID,TO_ID,LINK) VALUES ($1, $2, $3)", userID, followee.ID, follower.Username)
 	if err != nil {
 		return err
 	}
@@ -214,7 +215,7 @@ func Unfollow(r *http.Request, userID string) error {
 
 	followee, err := GetUserInfo("", followeeUsername)
 
-	_, err = config.DB.Exec("DELETE FROM follow WHERE follower_id = $1 AND following_id = $2", userID, followee.ID)
+	_, err = config.DB.Exec("DELETE FROM follow WHERE from_id = $1 AND to_id = $2", userID, followee.ID)
 
 	if err != nil {
 		return err
@@ -262,7 +263,7 @@ func Following(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	userID := vars["id"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on follower_id = $1 AND following_id = users.id", userID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on from_id = $1 AND to_id = users.id", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -287,7 +288,7 @@ func Likers(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	humID := vars["humID"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN likes on user_id = users.id AND hum_id = $1", humID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN likes on user_id = users.id AND likes.link = $1", humID)
 	if err != nil {
 		return nil, err
 	}

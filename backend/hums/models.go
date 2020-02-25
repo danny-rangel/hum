@@ -48,7 +48,7 @@ func UserHums(r *http.Request) ([]Hum, error) {
 
 // FollowerHums fetches all hums for currently followed users
 func FollowerHums(userID string) ([]Hum, error) {
-	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.follower_id INNER JOIN hums on hums.user_id = follow.following_id WHERE users.id = $1 ORDER BY Posted DESC", userID)
+	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.from_id INNER JOIN hums on hums.user_id = follow.to_id WHERE users.id = $1 ORDER BY Posted DESC", userID)
 
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func FollowerHums(userID string) ([]Hum, error) {
 	hums := make([]Hum, 0)
 	for rows.Next() {
 		hum := Hum{}
-		err := rows.Scan(&hum.ID, &hum.Content, &hum.Likes, &hum.Posted, &hum.UserID, &hum.Username) // order matters
+		err := rows.Scan(&hum.ID, &hum.Content, &hum.Likes, &hum.Posted, &hum.UserID, &hum.Username)
 		if err != nil {
 			return nil, err
 		}
@@ -140,7 +140,25 @@ func Like(r *http.Request, userID string) error {
 		panic(err)
 	}
 
-	rows, err := config.DB.Query("SELECT EXISTS(SELECT 1 FROM likes WHERE likes.user_id=$1 AND likes.hum_id=$2)", userID, h.ID)
+	rows, err := config.DB.Query("SELECT user_id FROM hums WHERE hums.id=$1", h.ID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var humUserID string
+
+	for rows.Next() {
+
+		if err := rows.Scan(&humUserID); err != nil {
+			log.Fatal(err)
+		}
+
+		if err != nil {
+			return errors.New("400. Bad Request. Hum not found")
+		}
+	}
+
+	rows, err = config.DB.Query("SELECT EXISTS(SELECT 1 FROM likes WHERE likes.from_id=$1 AND likes.link=$2)", userID, h.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -156,7 +174,7 @@ func Like(r *http.Request, userID string) error {
 		}
 	}
 
-	_, err = config.DB.Exec("INSERT INTO likes (USER_ID,HUM_ID) VALUES ($1, $2)", userID, h.ID)
+	_, err = config.DB.Exec("INSERT INTO likes (FROM_ID, TO_ID, LINK) VALUES ($1, $2, $3)", userID, humUserID, h.ID)
 	if err != nil {
 		return err
 	}
@@ -178,7 +196,7 @@ func Unlike(r *http.Request, userID string) error {
 		panic(err)
 	}
 
-	_, err = config.DB.Exec("DELETE FROM likes WHERE user_id = $1 AND hum_id = $2", userID, h.ID)
+	_, err = config.DB.Exec("DELETE FROM likes WHERE from_id = $1 AND link = $2", userID, h.ID)
 
 	if err != nil {
 		return err

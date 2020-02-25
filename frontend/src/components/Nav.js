@@ -21,7 +21,12 @@ const Nav = () => {
 
     return (
         <div>
-            <Link to="/">hum</Link>
+            <Link to={authContext.authState.auth ? '/home' : '/'}>hum</Link>
+            <span>
+                {authContext.authState.auth ? (
+                    <Link to="/notifications">notifications</Link>
+                ) : null}
+            </span>
             <span>
                 {authContext.authState.auth ? (
                     <Link to={authContext.authState.auth.username}>

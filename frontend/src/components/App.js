@@ -3,9 +3,11 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
 
+import Landing from '../pages/Landing';
 import Home from '../pages/Home';
 import SignUp from '../pages/SignUp';
 import Login from '../pages/Login';
+import Notifications from '../pages/Notifications';
 import Profile from '../pages/Profile';
 import Nav from '../components/Nav';
 
@@ -64,6 +66,9 @@ const App = () => {
                     <Nav />
                     <Switch>
                         <Route path="/" exact>
+                            <Landing />
+                        </Route>
+                        <Route path="/home" exact>
                             <Home />
                         </Route>
                         <Route path="/signup" exact>
@@ -71,6 +76,9 @@ const App = () => {
                         </Route>
                         <Route path="/login" exact>
                             <Login />
+                        </Route>
+                        <Route path="/notifications" exact>
+                            <Notifications />
                         </Route>
                         <Route path="/:username" exact>
                             <Profile />
