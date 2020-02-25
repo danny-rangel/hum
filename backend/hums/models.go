@@ -32,7 +32,7 @@ func UserHums(r *http.Request) ([]Hum, error) {
 	hums := make([]Hum, 0)
 	for rows.Next() {
 		hum := Hum{}
-		err := rows.Scan(&hum.ID, &hum.Content, &hum.Likes, &hum.Posted, &hum.UserID, &hum.Username) // order matters
+		err := rows.Scan(&hum.ID, &hum.Content, &hum.Likes, &hum.Posted, &hum.UserID, &hum.Username)
 		if err != nil {
 			return nil, err
 		}
@@ -106,6 +106,39 @@ func Delete(r *http.Request, userID string) error {
 
 	if err != nil {
 		panic(err)
+	}
+
+	return nil
+}
+
+func Like(r *http.Request, userID string) error {
+	humID := r.FormValue("humID")
+
+	_, err := config.DB.Exec("INSERT INTO likes (USER_ID,HUM_ID) VALUES ($1, $2)", userID, humID)
+	if err != nil {
+		return err
+	}
+
+	_, err = config.DB.Exec("UPDATE hums SET likes = likes + 1 WHERE hums.id = $1", humID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Unlike(r *http.Request, userID string) error {
+	humID := r.FormValue("humID")
+
+	_, err := config.DB.Exec("DELETE FROM likes WHERE user_id = $1 AND hum_id = $2", userID, humID)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = config.DB.Exec("UPDATE hums SET likes = likes - 1 WHERE hums.id = $1", humID)
+	if err != nil {
+		return err
 	}
 
 	return nil

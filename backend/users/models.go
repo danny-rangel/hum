@@ -22,10 +22,10 @@ type Credentials struct {
 type User struct {
 	ID        string `json:"id"`
 	Username  string `json:"username"`
-	Password  string `json:"password"`
 	NumPosts  int    `json:"numposts"`
 	Joined    string `json:"joined"`
 	Followers int    `json:"followers"`
+	Following int    `json:"following"`
 }
 
 func GetUserInfo(userID string, username string) (User, error) {
@@ -137,12 +137,21 @@ func Follow(r *http.Request, userID string) error {
 
 	followee, err := GetUserInfo("", followeeUsername)
 
+	if userID == followee.ID {
+		return errors.New("400. Bad Request. Can't follow yourself")
+	}
+
 	_, err = config.DB.Exec("INSERT INTO follow (FOLLOWER_ID,FOLLOWING_ID) VALUES ($1, $2)", userID, followee.ID)
 	if err != nil {
 		return err
 	}
 
 	_, err = config.DB.Exec("UPDATE users SET followers = followers + 1 WHERE users.id = $1", followee.ID)
+	if err != nil {
+		return err
+	}
+
+	_, err = config.DB.Exec("UPDATE users SET following = following + 1 WHERE users.id = $1", userID)
 	if err != nil {
 		return err
 	}
@@ -167,5 +176,85 @@ func Unfollow(r *http.Request, userID string) error {
 		return err
 	}
 
+	_, err = config.DB.Exec("UPDATE users SET following = following - 1 WHERE users.id = $1", userID)
+	if err != nil {
+		return err
+	}
+
 	return nil
+}
+
+func Followers(r *http.Request) ([]User, error) {
+	vars := mux.Vars(r)
+	userID := vars["id"]
+
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on follower_id = users.id AND following_id = $1", userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	users := make([]User, 0)
+	for rows.Next() {
+		user := User{}
+		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.Joined, &user.Followers, &user.Following)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+func Following(r *http.Request) ([]User, error) {
+	vars := mux.Vars(r)
+	userID := vars["id"]
+
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on follower_id = $1 AND following_id = users.id", userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	users := make([]User, 0)
+	for rows.Next() {
+		user := User{}
+		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.Joined, &user.Followers, &user.Following)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+func Likers(r *http.Request) ([]User, error) {
+	vars := mux.Vars(r)
+	humID := vars["humID"]
+
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN likes on user_id = users.id AND hum_id = $1", humID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	users := make([]User, 0)
+	for rows.Next() {
+		user := User{}
+		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.Joined, &user.Followers, &user.Following)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+	return users, nil
 }
