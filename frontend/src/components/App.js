@@ -1,25 +1,94 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import './App.css';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import axios from 'axios';
-import HumList from './Hums/HumList';
+
+import Home from '../pages/Home';
+import SignUp from '../pages/SignUp';
+import Login from '../pages/Login';
+import Nav from '../components/Nav';
+
+export const AuthContext = React.createContext();
+
+const initialState = {
+    loading: false,
+    error: '',
+    auth: null
+};
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case 'FETCH_SUCCESS':
+            return {
+                loading: false,
+                error: '',
+                auth: action.payload
+            };
+        case 'FETCH_ERROR':
+            return {
+                loading: false,
+                error: 'Something went wrong.',
+                auth: null
+            };
+        default:
+            return state;
+    }
+};
 
 const App = () => {
-    const [hums, setHums] = useState([]);
+    const [auth, dispatch] = useReducer(reducer, initialState);
 
-    const fetchHums = async () => {
-        const res = await axios.get('/api/hums');
-        setHums(res.data);
+    const fetchUserInfo = async () => {
+        try {
+            const res = await axios.get('/api/user');
+            dispatch({ type: 'FETCH_SUCCESS', payload: res.data });
+        } catch (err) {
+            dispatch({ type: 'FETCH_ERROR' });
+        }
     };
 
     useEffect(() => {
-        fetchHums();
+        fetchUserInfo();
     }, []);
 
     return (
-        <div className="App">
-            <header className="App-header">hum</header>
-            <HumList hums={hums} />
-        </div>
+        <Router>
+            <AuthContext.Provider
+                value={{
+                    authState: auth,
+                    authDispatch: dispatch
+                }}
+            >
+                <div className="App">
+                    <Nav></Nav>
+                    <nav className="App-header">
+                        <ul>
+                            <li>
+                                <Link to="/">Home</Link>
+                            </li>
+                            <li>
+                                <Link to="/signup">SignUp</Link>
+                            </li>
+                            <li>
+                                <Link to="/login">Login</Link>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <Switch>
+                        <Route path="/" exact>
+                            <Home />
+                        </Route>
+                        <Route path="/signup" exact>
+                            <SignUp />
+                        </Route>
+                        <Route path="/login" exact>
+                            <Login />
+                        </Route>
+                    </Switch>
+                </div>
+            </AuthContext.Provider>
+        </Router>
     );
 };
 

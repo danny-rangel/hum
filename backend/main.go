@@ -12,9 +12,10 @@ import (
 
 func main() {
 	r := mux.NewRouter()
-	r.HandleFunc("/login", users.Login)
-	r.HandleFunc("/logout", users.Logout)
-	r.HandleFunc("/signup", users.SignUp)
+	r.HandleFunc("/api/login", users.Login)
+	r.HandleFunc("/api/logout", users.Logout)
+	r.HandleFunc("/api/signup", users.SignUp)
+	r.HandleFunc("/api/user", users.FetchUser)
 	r.HandleFunc("/api/hums/{username}", hums.GetUserHums)
 	r.HandleFunc("/api/hums", hums.GetFollowerHums)
 	r.HandleFunc("/api/new/hums", hums.NewHum)

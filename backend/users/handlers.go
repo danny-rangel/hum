@@ -10,6 +10,21 @@ import (
 	"github.com/google/uuid"
 )
 
+func FetchUser(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	user, _ := CurrentUser(r)
+
+	if user.ID == "" {
+		return
+	}
+
+	json.NewEncoder(w).Encode(user)
+}
+
 func SignUp(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
@@ -31,7 +46,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	creds, err := LoginUser(r)
+	user, err := LoginUser(r)
 	if err != nil {
 		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
 		return
@@ -40,7 +55,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Create a new random session token
 	sessionToken := uuid.New().String()
 	// Set the token in the redis cache, along with the user whom it represents
-	err = config.Cache.Set(sessionToken, creds.ID, 336*time.Hour).Err()
+	err = config.Cache.Set(sessionToken, user.ID, 336*time.Hour).Err()
 	if err != nil {
 		// If there is an error in setting the cache, return an internal server error
 		w.WriteHeader(http.StatusInternalServerError)
@@ -54,7 +69,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Expires: time.Now().Add(336 * time.Hour),
 	})
 
-	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(user)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {

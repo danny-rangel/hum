@@ -2,8 +2,8 @@ package users
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -28,13 +28,34 @@ type User struct {
 	Following int    `json:"following"`
 }
 
+func CurrentUser(r *http.Request) (User, error) {
+	c, err := r.Cookie("session_token")
+	if err != nil {
+		return User{}, err
+	}
+
+	sessionToken := c.Value
+
+	userID, err := config.Cache.Get(sessionToken).Result()
+
+	if err != nil {
+		return User{}, err
+	}
+
+	user, err := GetUserInfo(userID, "")
+
+	if err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
 func GetUserInfo(userID string, username string) (User, error) {
 	var rows *sql.Rows
 	var err error
 
 	if userID != "" {
-		fmt.Println("HI")
-		fmt.Println(userID)
 		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers FROM users WHERE users.id = $1", userID)
 	} else {
 		rows, err = config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers FROM users WHERE users.username = $1", username)
@@ -60,9 +81,13 @@ func GetUserInfo(userID string, username string) (User, error) {
 }
 
 func RegisterUser(r *http.Request) (Credentials, error) {
+	d := json.NewDecoder(r.Body)
 	creds := Credentials{}
-	creds.Username = r.FormValue("username")
-	creds.Password = r.FormValue("password")
+	err := d.Decode(&creds)
+
+	if err != nil {
+		panic(err)
+	}
 
 	if creds.Username == "" || creds.Password == "" {
 		return creds, errors.New("400. Bad Request. Fields can't be empty")
@@ -94,20 +119,25 @@ func RegisterUser(r *http.Request) (Credentials, error) {
 	return creds, nil
 }
 
-func LoginUser(r *http.Request) (Credentials, error) {
+func LoginUser(r *http.Request) (User, error) {
+	d := json.NewDecoder(r.Body)
 	creds := Credentials{}
-	creds.Username = r.FormValue("username")
-	creds.Password = r.FormValue("password")
+	err := d.Decode(&creds)
+
+	if err != nil {
+		panic(err)
+	}
 
 	if creds.Username == "" || creds.Password == "" {
-		return creds, errors.New("400. Bad Request. Fields can't be empty")
+		return User{}, errors.New("400. Bad Request. Fields can't be empty")
 	}
 
 	rows, err := config.DB.Query("SELECT users.id, users.username, users.password FROM users WHERE users.username = $1", creds.Username)
 
 	if err != nil {
-		return creds, err
+		return User{}, err
 	}
+
 	defer rows.Close()
 
 	check := Credentials{}
@@ -118,17 +148,20 @@ func LoginUser(r *http.Request) (Credentials, error) {
 	}
 
 	if err != nil {
-		return Credentials{}, err
+		return User{}, err
 	}
-
-	check.Username = creds.Username
 
 	if err = bcrypt.CompareHashAndPassword([]byte(check.Password), []byte(creds.Password)); err != nil {
-		// If the two passwords don't match, return a 401 status
-		return creds, errors.New("Unauthorized")
+		return User{}, errors.New("Unauthorized")
 	}
 
-	return check, nil
+	user, err := GetUserInfo(check.ID, "")
+
+	if err != nil {
+		return User{}, errors.New("Error fetching user")
+	}
+
+	return user, nil
 }
 
 func Follow(r *http.Request, userID string) error {

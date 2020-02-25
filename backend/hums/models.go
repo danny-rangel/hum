@@ -1,6 +1,7 @@
 package hums
 
 import (
+	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
@@ -71,7 +72,13 @@ func FollowerHums(userID string) ([]Hum, error) {
 }
 
 func AddHum(userID string, r *http.Request) (Hum, error) {
-	content := r.FormValue("content")
+	d := json.NewDecoder(r.Body)
+	h := Hum{}
+	err := d.Decode(&h)
+
+	if err != nil {
+		panic(err)
+	}
 
 	rows, err := config.DB.Query("SELECT users.username FROM users WHERE users.id = $1", userID)
 
@@ -91,7 +98,7 @@ func AddHum(userID string, r *http.Request) (Hum, error) {
 		break
 	}
 
-	_, err = config.DB.Exec("INSERT INTO hums (content, posted, username, user_id) VALUES ($1, $2, $3, $4)", content, time.Now(), username, userID)
+	_, err = config.DB.Exec("INSERT INTO hums (content, posted, username, user_id) VALUES ($1, $2, $3, $4)", h.Content, time.Now(), username, userID)
 
 	if err != nil {
 		return Hum{}, err
@@ -114,9 +121,15 @@ func Delete(r *http.Request, userID string) error {
 }
 
 func Like(r *http.Request, userID string) error {
-	humID := r.FormValue("humID")
+	d := json.NewDecoder(r.Body)
+	h := Hum{}
+	err := d.Decode(&h)
 
-	rows, err := config.DB.Query("SELECT EXISTS(SELECT 1 FROM likes WHERE likes.user_id=$1 AND likes.hum_id=$2)", userID, humID)
+	if err != nil {
+		panic(err)
+	}
+
+	rows, err := config.DB.Query("SELECT EXISTS(SELECT 1 FROM likes WHERE likes.user_id=$1 AND likes.hum_id=$2)", userID, h.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -132,12 +145,12 @@ func Like(r *http.Request, userID string) error {
 		}
 	}
 
-	_, err = config.DB.Exec("INSERT INTO likes (USER_ID,HUM_ID) VALUES ($1, $2)", userID, humID)
+	_, err = config.DB.Exec("INSERT INTO likes (USER_ID,HUM_ID) VALUES ($1, $2)", userID, h.ID)
 	if err != nil {
 		return err
 	}
 
-	_, err = config.DB.Exec("UPDATE hums SET likes = likes + 1 WHERE hums.id = $1", humID)
+	_, err = config.DB.Exec("UPDATE hums SET likes = likes + 1 WHERE hums.id = $1", h.ID)
 	if err != nil {
 		return err
 	}
@@ -146,15 +159,21 @@ func Like(r *http.Request, userID string) error {
 }
 
 func Unlike(r *http.Request, userID string) error {
-	humID := r.FormValue("humID")
+	d := json.NewDecoder(r.Body)
+	h := Hum{}
+	err := d.Decode(&h)
 
-	_, err := config.DB.Exec("DELETE FROM likes WHERE user_id = $1 AND hum_id = $2", userID, humID)
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = config.DB.Exec("DELETE FROM likes WHERE user_id = $1 AND hum_id = $2", userID, h.ID)
 
 	if err != nil {
 		return err
 	}
 
-	_, err = config.DB.Exec("UPDATE hums SET likes = likes - 1 WHERE hums.id = $1", humID)
+	_, err = config.DB.Exec("UPDATE hums SET likes = likes - 1 WHERE hums.id = $1", h.ID)
 	if err != nil {
 		return err
 	}
