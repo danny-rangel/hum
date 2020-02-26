@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+import { RedirectContext } from '../components/App';
 
 import HumList from '../components/Hums/HumList';
 
 const Home = () => {
     const [hums, setHums] = useState(null);
     const [content, setContent] = useState('');
+    const redirectContext = useContext(RedirectContext);
 
-    const fetchHums = async () => {
+    const fetchHums = async source => {
         try {
-            const res = await axios.get('/api/hums');
+            const res = await axios.get('/api/hums', {
+                cancelToken: source.token
+            });
             setHums(res.data);
         } catch (err) {
-            console.log(err);
+            if (!axios.isCancel(err)) {
+                throw err;
+            }
         }
     };
 
@@ -28,11 +35,16 @@ const Home = () => {
     };
 
     useEffect(() => {
-        fetchHums();
+        const source = axios.CancelToken.source();
+        fetchHums(source);
+        return () => {
+            source.cancel();
+        };
     }, []);
 
     return (
-        <div>
+        <>
+            {redirectContext.redirect.toLanding ? <Redirect to="/" /> : null}
             <form method="post">
                 <textarea
                     name="content"
@@ -43,7 +55,7 @@ const Home = () => {
                 </button>
             </form>
             <HumList hums={hums} />
-        </div>
+        </>
     );
 };
 

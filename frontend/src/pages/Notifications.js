@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
+import { RedirectContext } from '../components/App';
 
 import NotificationList from '../components/Notifications/NotificationList';
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState(null);
+    const redirectContext = useContext(RedirectContext);
 
     const fetchNotifications = async () => {
         try {
@@ -20,9 +23,10 @@ const Notifications = () => {
     }, []);
 
     return (
-        <div>
+        <>
+            {redirectContext.redirect.toLanding ? <Redirect to="/" /> : null}
             <NotificationList notifications={notifications} />
-        </div>
+        </>
     );
 };
 

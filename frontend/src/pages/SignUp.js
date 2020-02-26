@@ -10,7 +10,7 @@ const SignUp = () => {
 
     const signUp = async e => {
         e.preventDefault();
-        authContext.authState.loading = true;
+        authContext.auth.loading = true;
         try {
             const res = await axios.post('/api/signup', {
                 username: username,
@@ -51,7 +51,7 @@ const SignUp = () => {
                 <button
                     type="submit"
                     value="submit"
-                    disabled={authContext.authState.loading}
+                    disabled={authContext.auth.loading}
                     onClick={signUp}
                 >
                     Sign Up

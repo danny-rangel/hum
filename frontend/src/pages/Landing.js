@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { RedirectContext } from '../components/App';
+import { Redirect } from 'react-router-dom';
 
 const Landing = () => {
-    return <div>Landing</div>;
+    const redirectContext = useContext(RedirectContext);
+
+    return (
+        <>
+            {!redirectContext.redirect.toLanding ? (
+                <Redirect to="/home" />
+            ) : null}
+            Landing
+        </>
+    );
 };
 
 export default Landing;

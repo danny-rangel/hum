@@ -249,7 +249,7 @@ func Followers(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	userID := vars["id"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on to_id = users.id AND from_id = $1", userID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on to_id = $1 AND from_id = users.id", userID)
 	if err != nil {
 		return nil, err
 	}

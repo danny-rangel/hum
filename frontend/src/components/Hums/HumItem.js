@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const HumItem = ({ hum }) => {
     const likeHum = async () => {
@@ -15,8 +16,8 @@ const HumItem = ({ hum }) => {
     return (
         <div>
             <h1>{hum.content}</h1>
-            <h4>{hum.username}</h4>
-            <h4>{`${hum.likes} likes`}</h4>
+            <Link to={`/${hum.username}`}>{hum.username}</Link>
+            <Link to={`/likes/${hum.id}`}>{`${hum.likes} likes`}</Link>
             <button onClick={likeHum}>Like</button>
         </div>
     );

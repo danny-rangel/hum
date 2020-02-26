@@ -2,15 +2,17 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 
 import { AuthContext } from '../components/App';
+import { RedirectContext } from '../components/App';
 
 const Login = () => {
     const authContext = useContext(AuthContext);
+    const redirectContext = useContext(RedirectContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const fetchUser = async e => {
         e.preventDefault();
-        authContext.authState.loading = true;
+        authContext.auth.loading = true;
         try {
             const res = await axios.post('/api/login', {
                 username: username,
@@ -19,6 +21,9 @@ const Login = () => {
             authContext.authDispatch({
                 type: 'FETCH_SUCCESS',
                 payload: res.data
+            });
+            redirectContext.redirectDispatch({
+                type: 'AUTH_TRUE'
             });
         } catch (err) {
             authContext.authDispatch({ type: 'FETCH_ERROR' });
@@ -51,7 +56,7 @@ const Login = () => {
                 <button
                     type="submit"
                     value="submit"
-                    disabled={authContext.authState.loading}
+                    disabled={authContext.auth.loading}
                     onClick={fetchUser}
                 >
                     Login
