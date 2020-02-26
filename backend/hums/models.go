@@ -158,7 +158,7 @@ func Like(r *http.Request, userID string) error {
 		}
 	}
 
-	rows, err = config.DB.Query("SELECT EXISTS(SELECT 1 FROM likes WHERE likes.from_id=$1 AND likes.link=$2)", userID, h.ID)
+	rows, err = config.DB.Query("SELECT EXISTS(SELECT 1 FROM likes WHERE likes.from_id=$1 AND likes.hum_id=$2)", userID, h.ID)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -174,7 +174,12 @@ func Like(r *http.Request, userID string) error {
 		}
 	}
 
-	_, err = config.DB.Exec("INSERT INTO likes (FROM_ID, TO_ID, LINK) VALUES ($1, $2, $3)", userID, humUserID, h.ID)
+	_, err = config.DB.Exec("INSERT INTO likes (FROM_ID, TO_ID, HUM_ID) VALUES ($1, $2, $3)", userID, humUserID, h.ID)
+	if err != nil {
+		return err
+	}
+
+	_, err = config.DB.Exec("INSERT INTO notifications (KIND, FROM_ID, TO_ID, LINK) VALUES ($1, $2, $3, $4)", "like", userID, humUserID, h.ID)
 	if err != nil {
 		return err
 	}
@@ -196,7 +201,13 @@ func Unlike(r *http.Request, userID string) error {
 		panic(err)
 	}
 
-	_, err = config.DB.Exec("DELETE FROM likes WHERE from_id = $1 AND link = $2", userID, h.ID)
+	_, err = config.DB.Exec("DELETE FROM likes WHERE from_id = $1 AND hum_id = $2", userID, h.ID)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = config.DB.Exec("DELETE FROM notifications WHERE from_id = $1 AND link = $2", userID, h.ID)
 
 	if err != nil {
 		return err

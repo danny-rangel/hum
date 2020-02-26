@@ -191,7 +191,12 @@ func Follow(r *http.Request, userID string) error {
 		}
 	}
 
-	_, err = config.DB.Exec("INSERT INTO follow (FROM_ID,TO_ID,LINK) VALUES ($1, $2, $3)", userID, followee.ID, follower.Username)
+	_, err = config.DB.Exec("INSERT INTO follow (FROM_ID,TO_ID) VALUES ($1, $2)", userID, followee.ID)
+	if err != nil {
+		return err
+	}
+
+	_, err = config.DB.Exec("INSERT INTO notifications (KIND,FROM_ID,TO_ID,LINK) VALUES ($1, $2, $3, $4)", "follow", userID, followee.ID, follower.Username)
 	if err != nil {
 		return err
 	}
@@ -221,6 +226,12 @@ func Unfollow(r *http.Request, userID string) error {
 		return err
 	}
 
+	_, err = config.DB.Exec("DELETE FROM notifications WHERE from_id = $1 AND to_id = $2 AND kind = 'follow'", userID, followee.ID)
+
+	if err != nil {
+		return err
+	}
+
 	_, err = config.DB.Exec("UPDATE users SET followers = followers - 1 WHERE users.id = $1", followee.ID)
 	if err != nil {
 		return err
@@ -238,7 +249,7 @@ func Followers(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	userID := vars["id"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on follower_id = users.id AND following_id = $1", userID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on to_id = users.id AND from_id = $1", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -288,7 +299,7 @@ func Likers(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	humID := vars["humID"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN likes on user_id = users.id AND likes.link = $1", humID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN likes on to_id = users.id AND likes.hum_id = $1", humID)
 	if err != nil {
 		return nil, err
 	}

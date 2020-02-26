@@ -27,6 +27,14 @@ const Profile = () => {
         }
     };
 
+    const followUser = async () => {
+        try {
+            await axios.get(`/api/follow/${username}`);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     useEffect(() => {
         fetchProfile();
         fetchHums();
@@ -42,6 +50,7 @@ const Profile = () => {
                         <h4>hums:{user.numposts}</h4>
                         <h4>followers:{user.followers}</h4>
                         <h4>following:{user.following}</h4>
+                        <button onClick={followUser}>follow</button>
                     </>
                 ) : null}
             </div>

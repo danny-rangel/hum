@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/danny-rangel/web/hum/backend/hums"
+	"github.com/danny-rangel/web/hum/backend/notifications"
 	"github.com/danny-rangel/web/hum/backend/users"
 
 	"github.com/gorilla/mux"
@@ -28,6 +29,7 @@ func main() {
 	r.HandleFunc("/api/like", hums.LikePost)
 	r.HandleFunc("/api/unlike", hums.UnlikePost)
 	r.HandleFunc("/api/likers/{humID}", users.GetLikers)
+	r.HandleFunc("/api/notifications", notifications.GetUserNotifications)
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
