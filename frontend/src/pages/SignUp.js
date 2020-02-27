@@ -3,19 +3,41 @@ import axios from 'axios';
 import styled from 'styled-components';
 
 import { AuthContext } from '../components/App';
+import { StyledButton } from '../components/Styled/StyledButton';
+
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+`;
 
 const StyledForm = styled.form`
     background-color: white;
     width: 100%;
-    height: 300px;
-    display: grid;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    max-width: 300px;
+    max-width: 350px;
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
+        rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
 `;
 
 const StyledInput = styled.input`
-    width: 90%;
+    width: 80%;
+    height: 40px;
+    border-radius: 4px;
+    border: none;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
+        rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
+    padding: 5px 10px;
 `;
 
 const SignUp = () => {
@@ -41,35 +63,60 @@ const SignUp = () => {
     };
 
     return (
-        <div>
-            <StyledForm method="post">
-                <label>Username</label>
-                <StyledInput
-                    type="text"
-                    name="username"
-                    required
-                    onChange={e => setUsername(e.target.value)}
-                    value={username}
-                ></StyledInput>
-                <br />
-                <label>Password</label>
-                <StyledInput
-                    type="password"
-                    name="password"
-                    required
-                    onChange={e => setPassword(e.target.value)}
-                    value={password}
-                ></StyledInput>
-                <br />
-                <button
-                    type="submit"
-                    value="submit"
-                    disabled={authContext.auth.loading}
-                    onClick={signUp}
-                >
-                    Sign Up
-                </button>
-            </StyledForm>
+        <div className="wrapper">
+            <StyledDiv>
+                <StyledForm method="post">
+                    <h2
+                        style={{
+                            color: '#9c9a9a',
+                            fontFamily: 'Khula',
+                            letterSpacing: '-2px',
+                            fontWeight: '100',
+                            fontSize: '2em',
+                            margin: '10px 0 0'
+                        }}
+                    >
+                        sign up
+                    </h2>
+                    <div
+                        style={{
+                            width: '100%',
+                            height: '2px',
+                            backgroundColor: 'rgb(242, 242, 242)',
+                            margin: '10px 0 20px'
+                        }}
+                    ></div>
+                    <StyledInput
+                        type="text"
+                        name="username"
+                        required
+                        onChange={e => setUsername(e.target.value)}
+                        value={username}
+                        placeholder="username"
+                    ></StyledInput>
+                    <br />
+                    <StyledInput
+                        type="password"
+                        name="password"
+                        required
+                        onChange={e => setPassword(e.target.value)}
+                        value={password}
+                        placeholder="password"
+                    ></StyledInput>
+                    <br />
+                    <StyledButton
+                        type="submit"
+                        value="submit"
+                        disabled={authContext.auth.loading}
+                        onClick={signUp}
+                        padding="12px 50px"
+                        fontSize="0.8em"
+                        margin="20px 0"
+                    >
+                        Sign Up
+                    </StyledButton>
+                </StyledForm>
+            </StyledDiv>
         </div>
     );
 };
