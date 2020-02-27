@@ -1,8 +1,16 @@
 import React, { useContext } from 'react';
+import styled from 'styled-components';
 import { RedirectContext } from '../components/App';
 import { Redirect } from 'react-router-dom';
 import { StyledButton } from '../components/Styled/StyledButton';
 import { Link } from 'react-router-dom';
+
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+`;
 
 const Landing = () => {
     const redirectContext = useContext(RedirectContext);
@@ -13,14 +21,23 @@ const Landing = () => {
                 <Redirect to="/home" />
             ) : null}
             <div className="wrapper">
-                <h1 className="line-under" style={{ fontSize: '9em' }}>
-                    HUM
-                </h1>
-                <Link to="/signup">
-                    <StyledButton padding="12px 50px" fontSize="1em">
-                        sign up
-                    </StyledButton>
-                </Link>
+                <StyledDiv>
+                    <h1
+                        className="line-under"
+                        style={{ fontSize: '9em', margin: '100px 0 60px' }}
+                    >
+                        HUM
+                    </h1>
+                    <Link to="/signup">
+                        <StyledButton
+                            padding="12px 50px"
+                            fontSize="1em"
+                            margin="20px 0"
+                        >
+                            sign up
+                        </StyledButton>
+                    </Link>
+                </StyledDiv>
             </div>
         </>
     );

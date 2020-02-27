@@ -1,7 +1,22 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import styled from 'styled-components';
 
 import { AuthContext } from '../components/App';
+
+const StyledForm = styled.form`
+    background-color: white;
+    width: 100%;
+    height: 300px;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    max-width: 300px;
+`;
+
+const StyledInput = styled.input`
+    width: 90%;
+`;
 
 const SignUp = () => {
     const authContext = useContext(AuthContext);
@@ -27,26 +42,24 @@ const SignUp = () => {
 
     return (
         <div>
-            <form method="post">
-                <label></label>
-                Username
-                <input
+            <StyledForm method="post">
+                <label>Username</label>
+                <StyledInput
                     type="text"
                     name="username"
                     required
                     onChange={e => setUsername(e.target.value)}
                     value={username}
-                ></input>
+                ></StyledInput>
                 <br />
-                <label></label>
-                Password
-                <input
+                <label>Password</label>
+                <StyledInput
                     type="password"
                     name="password"
                     required
                     onChange={e => setPassword(e.target.value)}
                     value={password}
-                ></input>
+                ></StyledInput>
                 <br />
                 <button
                     type="submit"
@@ -56,7 +69,7 @@ const SignUp = () => {
                 >
                     Sign Up
                 </button>
-            </form>
+            </StyledForm>
         </div>
     );
 };
