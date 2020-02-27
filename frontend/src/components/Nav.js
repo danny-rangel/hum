@@ -10,20 +10,14 @@ import { StyledButton } from './Styled/StyledButton';
 const StyledHeader = styled.header`
     width: 100%;
     height: 50px;
-    border-bottom: 1px solid rgb(200, 200, 200);
     display: flex;
     align-items: center;
     justify-content: flex-end;
 `;
 
 const StyledLinks = styled.li`
-    transition: all 0.3s ease 0s;
     display: inline-block;
     margin-right: 40px;
-
-    :hover {
-        color: mediumslateblue;
-    }
 `;
 
 const Nav = () => {
@@ -49,9 +43,10 @@ const Nav = () => {
         <StyledHeader>
             <Link
                 to="/home"
+                className="line-under"
                 style={{ marginRight: 'auto', marginLeft: '40px' }}
             >
-                hum
+                <h1>hum</h1>
             </Link>
             <nav>
                 <ul>
@@ -75,7 +70,9 @@ const Nav = () => {
                 </StyledButton>
             ) : (
                 <Link to="/login" style={{ marginRight: '40px' }}>
-                    Login
+                    <StyledButton padding="8px 30px" fontSize="1em">
+                        login
+                    </StyledButton>
                 </Link>
             )}
         </StyledHeader>

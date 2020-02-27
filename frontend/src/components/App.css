@@ -1,8 +1,41 @@
+@import url('https://fonts.googleapis.com/css?family=Khula|Roboto&display=swap');
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+}
+
 .App {
     text-align: center;
-    background-color: #f6f8fa;
+    background: rgb(245, 245, 245);
+    background: linear-gradient(
+        315deg,
+        rgba(245, 245, 245, 1) 27%,
+        rgba(249, 200, 200, 1) 78%
+    );
     min-height: 100vh;
     color: rgb(0, 0, 0);
+    font-family: 'Roboto';
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Khula';
+    letter-spacing: -2px;
+    font-weight: 100;
+    color: white;
+    text-shadow: 0px 0px 4px rgb(156, 137, 137);
+    margin: 0;
 }
 
 a {
@@ -10,6 +43,30 @@ a {
     text-decoration: none;
 }
 
+.line-under:after {
+    content: '';
+    display: block;
+    width: 0%;
+    height: 2px;
+    background-color: rgb(255, 255, 255);
+    transition: width 0.8s;
+}
+
+.line-under:hover::after {
+    width: 100%;
+}
+
 ul {
     list-style-type: none;
+}
+
+.wrapper {
+    display: grid;
+    height: 100%;
+    max-width: 800px;
+    width: 95%;
+    margin: auto;
+    grid-template-rows: 500px 1fr;
+    justify-content: center;
+    align-items: center;
 }
