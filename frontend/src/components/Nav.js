@@ -71,7 +71,7 @@ const Nav = () => {
             ) : (
                 <Link to="/login" style={{ marginRight: '40px' }}>
                     <StyledButton padding="8px 30px" fontSize="1em">
-                        login
+                        log in
                     </StyledButton>
                 </Link>
             )}

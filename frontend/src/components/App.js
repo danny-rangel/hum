@@ -38,7 +38,7 @@ const authReducer = (state, action) => {
         case 'FETCH_ERROR':
             return {
                 loading: false,
-                error: 'Something went wrong.',
+                error: action.payload,
                 auth: null
             };
         default:

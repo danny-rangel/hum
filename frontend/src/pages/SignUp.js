@@ -4,8 +4,9 @@ import styled from 'styled-components';
 
 import { AuthContext } from '../components/App';
 import { StyledButton } from '../components/Styled/StyledButton';
+import { StyledError, ErrorButton } from './Login';
 
-const StyledDiv = styled.div`
+export const StyledDiv = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -14,7 +15,7 @@ const StyledDiv = styled.div`
     justify-content: center;
 `;
 
-const StyledForm = styled.form`
+export const StyledForm = styled.form`
     background-color: white;
     width: 100%;
     height: 350px;
@@ -29,7 +30,7 @@ const StyledForm = styled.form`
         rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
 `;
 
-const StyledInput = styled.input`
+export const StyledInput = styled.input`
     width: 80%;
     height: 40px;
     border-radius: 4px;
@@ -58,7 +59,10 @@ const SignUp = () => {
                 payload: res.data
             });
         } catch (err) {
-            authContext.authDispatch({ type: 'FETCH_ERROR' });
+            authContext.authDispatch({
+                type: 'FETCH_ERROR',
+                payload: 'Something went wrong. Try again!'
+            });
         }
     };
 
@@ -68,7 +72,7 @@ const SignUp = () => {
                 <StyledForm method="post">
                     <h2
                         style={{
-                            color: '#9c9a9a',
+                            color: 'rgb(134, 134, 134)',
                             fontFamily: 'Khula',
                             letterSpacing: '-2px',
                             fontWeight: '100',
@@ -104,6 +108,23 @@ const SignUp = () => {
                         placeholder="password"
                     ></StyledInput>
                     <br />
+                    {authContext.auth.error === '' ? null : (
+                        <StyledError>
+                            <h4 style={{ marginLeft: '60px' }}>
+                                {authContext.auth.error}
+                            </h4>
+                            <ErrorButton
+                                onClick={() =>
+                                    authContext.authDispatch({
+                                        type: 'FETCH_ERROR',
+                                        payload: ''
+                                    })
+                                }
+                            >
+                                X
+                            </ErrorButton>
+                        </StyledError>
+                    )}
                     <StyledButton
                         type="submit"
                         value="submit"
@@ -113,7 +134,7 @@ const SignUp = () => {
                         fontSize="0.8em"
                         margin="20px 0"
                     >
-                        Sign Up
+                        sign up
                     </StyledButton>
                 </StyledForm>
             </StyledDiv>
