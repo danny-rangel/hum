@@ -26,6 +26,14 @@ const StyledLink = styled(Link)`
     height: 100%;
 `;
 
+const StyledAVI = styled.img`
+    width: 30px;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
+        rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
+`;
+
 const Nav = () => {
     const authContext = useContext(AuthContext);
     const redirectContext = useContext(RedirectContext);
@@ -79,22 +87,16 @@ const Nav = () => {
                     <StyledLi className="line-under-dark">
                         {authContext.auth.auth ? (
                             <StyledLink to={authContext.auth.auth.username}>
-                                <h4>{authContext.auth.auth.username}</h4>
+                                {/* <h4>{authContext.auth.auth.username}</h4> */}
+                                <StyledAVI
+                                    src={authContext.auth.auth.avi}
+                                ></StyledAVI>
                             </StyledLink>
                         ) : null}
                     </StyledLi>
                 </ul>
             </nav>
-            {authContext.auth.auth ? (
-                <StyledButton
-                    onClick={logout}
-                    padding="8px 30px"
-                    fontSize="1em"
-                    className="login-button"
-                >
-                    Logout
-                </StyledButton>
-            ) : (
+            {authContext.auth.auth ? null : (
                 <Link to="/login" className="login-button">
                     <StyledButton padding="8px 30px" fontSize="1em">
                         log in
