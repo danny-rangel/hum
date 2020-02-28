@@ -1,14 +1,56 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
 import { RedirectContext } from '../components/App';
+import { StyledButton } from '../components/Styled/StyledButton';
 
 import HumList from '../components/Hums/HumList';
+
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    height: 100%;
+    width: 100%;
+`;
+
+const StyledForm = styled.form`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    height: 150px;
+`;
+
+const StyledTextArea = styled.textarea`
+    border: none;
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
+        rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
+    margin: 0 0 10px;
+    height: 100%;
+    border: none;
+    border-radius: 2px;
+    font-size: 1em;
+    padding: 10px;
+    resize: none;
+    width: 100%;
+    box-sizing: border-box;
+`;
 
 const Home = () => {
     const [hums, setHums] = useState(null);
     const [content, setContent] = useState('');
+    const [charCount, setCharCount] = useState(50);
     const redirectContext = useContext(RedirectContext);
+
+    const updateContent = e => {
+        setContent(e.target.value);
+        setCharCount(50 - e.target.value.length);
+    };
 
     const fetchHums = async source => {
         try {
@@ -43,19 +85,43 @@ const Home = () => {
     }, []);
 
     return (
-        <>
+        <div className="wrapper">
             {redirectContext.redirect.toLanding ? <Redirect to="/" /> : null}
-            <form method="post">
-                <textarea
-                    name="content"
-                    onChange={e => setContent(e.target.value)}
-                ></textarea>
-                <button type="submit" onClick={postHum}>
-                    Post
-                </button>
-            </form>
-            <HumList hums={hums} />
-        </>
+            <StyledDiv>
+                <StyledForm method="post">
+                    <StyledTextArea
+                        name="content"
+                        maxlength="50"
+                        onChange={e => updateContent(e)}
+                    ></StyledTextArea>
+                    <span
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            width: '100%'
+                        }}
+                    >
+                        <StyledButton
+                            type="submit"
+                            onClick={postHum}
+                            fontSize="1em"
+                            style={{ width: '30%' }}
+                        >
+                            post hum
+                        </StyledButton>
+                        <h2
+                            style={{
+                                color: charCount < 0 ? 'red' : null
+                            }}
+                        >
+                            {charCount}
+                        </h2>
+                    </span>
+                </StyledForm>
+                {/* <HumList hums={hums} /> */}
+            </StyledDiv>
+        </div>
     );
 };
 

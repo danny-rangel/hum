@@ -79,6 +79,10 @@ func AddHum(userID string, r *http.Request) (Hum, error) {
 		panic(err)
 	}
 
+	if len(h.Content) > 50 {
+		return Hum{}, errors.New("400. Bad Request. Too many characters")
+	}
+
 	rows, err := config.DB.Query("SELECT users.username FROM users WHERE users.id = $1", userID)
 
 	if err != nil {

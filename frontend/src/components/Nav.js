@@ -2,7 +2,8 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
-
+import { ReactComponent as NotiIcon } from '../icons/bell.svg';
+import { ReactComponent as SearchIcon } from '../icons/search.svg';
 import { AuthContext } from './App';
 import { RedirectContext } from './App';
 import { StyledButton } from './Styled/StyledButton';
@@ -15,9 +16,14 @@ const StyledHeader = styled.header`
     justify-content: flex-end;
 `;
 
-const StyledLinks = styled.li`
+const StyledLi = styled.li`
     display: inline-block;
     margin-right: 40px;
+`;
+
+const StyledLink = styled(Link)`
+    margin: 0;
+    height: 100%;
 `;
 
 const Nav = () => {
@@ -41,35 +47,55 @@ const Nav = () => {
 
     return (
         <StyledHeader>
-            <Link
-                to="/home"
-                className="line-under"
-                style={{ marginRight: 'auto', marginLeft: '40px' }}
-            >
-                <h1>hum</h1>
-            </Link>
+            {authContext.auth.auth ? (
+                <Link
+                    to="/home"
+                    className="line-under-dark"
+                    style={{ marginRight: 'auto', marginLeft: '40px' }}
+                >
+                    <h4>hum</h4>
+                </Link>
+            ) : null}
             <nav>
-                <ul>
-                    <StyledLinks>
+                <ul style={{ display: 'flex', alignItems: 'center' }}>
+                    <StyledLi className="line-under-dark">
                         {authContext.auth.auth ? (
-                            <Link to="/notifications">notifications</Link>
+                            <StyledLink to="/notifications">
+                                <SearchIcon
+                                    style={{ width: '30px', height: '30px' }}
+                                />
+                            </StyledLink>
                         ) : null}
-                    </StyledLinks>
-                    <StyledLinks>
+                    </StyledLi>
+                    <StyledLi className="line-under-dark">
                         {authContext.auth.auth ? (
-                            <Link to={authContext.auth.auth.username}>
-                                {authContext.auth.auth.username}
-                            </Link>
+                            <StyledLink to="/notifications">
+                                <NotiIcon
+                                    style={{ width: '30px', height: '30px' }}
+                                />
+                            </StyledLink>
                         ) : null}
-                    </StyledLinks>
+                    </StyledLi>
+                    <StyledLi className="line-under-dark">
+                        {authContext.auth.auth ? (
+                            <StyledLink to={authContext.auth.auth.username}>
+                                <h4>{authContext.auth.auth.username}</h4>
+                            </StyledLink>
+                        ) : null}
+                    </StyledLi>
                 </ul>
             </nav>
             {authContext.auth.auth ? (
-                <StyledButton onClick={logout} style={{ marginRight: '40px' }}>
+                <StyledButton
+                    onClick={logout}
+                    padding="8px 30px"
+                    fontSize="1em"
+                    className="login-button"
+                >
                     Logout
                 </StyledButton>
             ) : (
-                <Link to="/login" style={{ marginRight: '40px' }}>
+                <Link to="/login" className="login-button">
                     <StyledButton padding="8px 30px" fontSize="1em">
                         log in
                     </StyledButton>

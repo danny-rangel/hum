@@ -26,11 +26,7 @@ body {
     font-family: 'Roboto';
 }
 
-h1,
-/* h2, */
-/* h3, */
-/* h4, */
-h5 {
+h1 {
     font-family: 'Khula';
     letter-spacing: -2px;
     font-weight: 100;
@@ -39,9 +35,21 @@ h5 {
     margin: 0;
 }
 
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Khula';
+    letter-spacing: -2px;
+    font-weight: 100;
+    color: #2f2f2f;
+    margin: 0;
+    font-size: 1.5em;
+}
+
 a {
-    color: rgb(0, 0, 0);
     text-decoration: none;
+    color: #2f2f2f;
 }
 
 .line-under:after {
@@ -57,6 +65,19 @@ a {
     width: 100%;
 }
 
+.line-under-dark:after {
+    content: '';
+    display: block;
+    width: 0%;
+    height: 2px;
+    background-color: #2f2f2f;
+    transition: width 0.8s;
+}
+
+.line-under-dark:hover::after {
+    width: 100%;
+}
+
 ul {
     list-style-type: none;
 }
@@ -64,9 +85,25 @@ ul {
 .wrapper {
     height: 100%;
     margin: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
     width: 95%;
     max-width: 800px;
+}
+
+.login-button {
+    margin-right: 40px;
+}
+
+@media only screen and (max-width: 600px) {
+    h2,
+    h4 {
+        font-size: 1.2em;
+        letter-spacing: 0px;
+    }
+
+    .login-button {
+        margin-right: 15px;
+    }
 }
