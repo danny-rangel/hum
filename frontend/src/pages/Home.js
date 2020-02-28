@@ -92,6 +92,7 @@ const Home = () => {
                     <StyledTextArea
                         name="content"
                         maxlength="50"
+                        placeholder="what's up?"
                         onChange={e => updateContent(e)}
                     ></StyledTextArea>
                     <span
@@ -112,6 +113,7 @@ const Home = () => {
                         </StyledButton>
                         <h2
                             style={{
+                                marginRight: '1px',
                                 color: charCount < 0 ? 'red' : null
                             }}
                         >

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import styled from 'styled-components';
 import { ReactComponent as NotiIcon } from '../icons/bell.svg';
 import { ReactComponent as SearchIcon } from '../icons/search.svg';
@@ -34,24 +33,9 @@ const StyledAVI = styled.img`
         rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
 `;
 
-const Nav = () => {
+const Nav = ({ setShowSidebar }) => {
     const authContext = useContext(AuthContext);
     const redirectContext = useContext(RedirectContext);
-
-    const logout = async () => {
-        try {
-            const res = await axios.get('/api/logout');
-            authContext.authDispatch({
-                type: 'FETCH_SUCCESS',
-                payload: res.data
-            });
-            redirectContext.redirectDispatch({
-                type: 'AUTH_FALSE'
-            });
-        } catch (err) {
-            authContext.authDispatch({ type: 'FETCH_ERROR' });
-        }
-    };
 
     return (
         <StyledHeader>
@@ -86,12 +70,19 @@ const Nav = () => {
                     </StyledLi>
                     <StyledLi className="line-under-dark">
                         {authContext.auth.auth ? (
-                            <StyledLink to={authContext.auth.auth.username}>
-                                {/* <h4>{authContext.auth.auth.username}</h4> */}
+                            <button
+                                style={{
+                                    border: 'none',
+                                    background: 'transparent',
+                                    borderRadius: '50%',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={() => setShowSidebar(true)}
+                            >
                                 <StyledAVI
                                     src={authContext.auth.auth.avi}
                                 ></StyledAVI>
-                            </StyledLink>
+                            </button>
                         ) : null}
                     </StyledLi>
                 </ul>

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import axios from 'axios';
@@ -13,6 +13,7 @@ import Nav from '../components/Nav';
 import Likes from '../pages/Likes';
 import Followers from '../pages/Followers';
 import Following from '../pages/Following';
+import Sidebar from './Sidebar';
 
 export const AuthContext = React.createContext();
 export const RedirectContext = React.createContext();
@@ -62,11 +63,16 @@ const redirectReducer = (state, action) => {
 };
 
 const App = () => {
+    const [show, setShow] = useState(false);
     const [auth, authDispatch] = useReducer(authReducer, authInitialState);
     const [redirect, redirectDispatch] = useReducer(
         redirectReducer,
         redirectInitialState
     );
+
+    const setShowSidebar = result => {
+        setShow(result);
+    };
 
     const fetchUserInfo = async () => {
         try {
@@ -102,7 +108,8 @@ const App = () => {
                     }}
                 >
                     <div className="App">
-                        <Nav />
+                        <Nav setShowSidebar={setShowSidebar} />
+                        <Sidebar show={show} setShowSidebar={setShowSidebar} />
                         <Switch>
                             <Route path="/" exact>
                                 <Landing />
