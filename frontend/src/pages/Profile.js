@@ -27,12 +27,22 @@ const Profile = () => {
     const authContext = useContext(AuthContext);
     const [hums, setHums] = useState(null);
     const [user, setUser] = useState(null);
+    const [isFollowing, setIsFollowing] = useState(null);
     const { username } = useParams();
 
     const fetchProfile = async () => {
         try {
             const res = await axios.get(`/api/user/${username}`);
             setUser(res.data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const fetchIsFollowing = async () => {
+        try {
+            const isFollowing = await axios.get(`/api/isfollowing/${user.id}`);
+            setIsFollowing(isFollowing.data);
         } catch (err) {
             console.log(err);
         }
@@ -49,16 +59,34 @@ const Profile = () => {
 
     const followUser = async () => {
         try {
+            setIsFollowing(true);
             await axios.get(`/api/follow/${username}`);
+            fetchIsFollowing();
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const unfollowUser = async () => {
+        try {
+            setIsFollowing(false);
+            await axios.get(`/api/unfollow/${username}`);
+            fetchIsFollowing();
         } catch (err) {
             console.log(err);
         }
     };
 
     useEffect(() => {
+        if (user) {
+            fetchIsFollowing();
+        }
+    }, [user]);
+
+    useEffect(() => {
         fetchProfile();
         fetchHums();
-    }, []);
+    }, [username]);
 
     return (
         <div className="wrapper">
@@ -76,14 +104,25 @@ const Profile = () => {
                         </Link>
                         {authContext.auth.auth ? (
                             authContext.auth.auth.username !== username ? (
-                                <StyledButton
-                                    padding="12px 40px"
-                                    fontSize="1em"
-                                    margin="20px"
-                                    onClick={followUser}
-                                >
-                                    follow
-                                </StyledButton>
+                                isFollowing ? (
+                                    <StyledButton
+                                        padding="12px 40px"
+                                        fontSize="1em"
+                                        margin="20px"
+                                        onClick={unfollowUser}
+                                    >
+                                        unfollow
+                                    </StyledButton>
+                                ) : (
+                                    <StyledButton
+                                        padding="12px 40px"
+                                        fontSize="1em"
+                                        margin="20px"
+                                        onClick={followUser}
+                                    >
+                                        follow
+                                    </StyledButton>
+                                )
                             ) : null
                         ) : null}
                     </>

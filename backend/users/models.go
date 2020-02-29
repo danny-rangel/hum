@@ -319,3 +319,29 @@ func Likers(r *http.Request) ([]User, error) {
 	}
 	return users, nil
 }
+
+func isFollowing(r *http.Request, userID string) (bool, error) {
+	vars := mux.Vars(r)
+	checkID := vars["id"]
+
+	rows, err := config.DB.Query("SELECT CASE WHEN EXISTS (SELECT  follow.id FROM follow WHERE follow.from_id=$1 and follow.to_id=$2) THEN 1 ELSE 0 END", userID, checkID)
+
+	if err != nil {
+		return false, err
+	}
+	defer rows.Close()
+
+	var exists int
+
+	for rows.Next() {
+		if err := rows.Scan(&exists); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if exists == 1 {
+		return true, nil
+	}
+
+	return false, nil
+}

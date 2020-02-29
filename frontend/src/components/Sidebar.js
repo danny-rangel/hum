@@ -78,7 +78,9 @@ const Sidebar = ({ show, setShowSidebar }) => {
                         }`}
                         onClick={() => setShowSidebar(false)}
                     >
-                        danny
+                        {authContext.auth.auth
+                            ? authContext.auth.auth.username
+                            : null}
                     </Link>
                 </SidebarLI>
                 <SidebarLI>
