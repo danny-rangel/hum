@@ -8,8 +8,9 @@ import NotificationList from '../components/Notifications/NotificationList';
 
 const StyledDiv = styled.div`
     display: flex;
+    margin: 50px auto;
     flex-direction: column;
-    margin-top: 50px;
+    box-sizing: border-box;
     width: 100%;
     max-width: 400px;
     background-color: #ffffff;

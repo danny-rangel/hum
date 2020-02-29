@@ -1,4 +1,13 @@
 import React from 'react';
+import styled from 'styled-components';
+
+const NotiItem = styled.div`
+    padding: 10px 0;
+
+    :not(:last-child) {
+        border-bottom: 1px solid #dfdddd;
+    }
+`;
 
 const NotificationItem = ({ notification }) => {
     const renderText = () => {
@@ -9,7 +18,7 @@ const NotificationItem = ({ notification }) => {
         }
     };
 
-    return <div>{renderText()}</div>;
+    return <NotiItem>{renderText()}</NotiItem>;
 };
 
 export default NotificationItem;
