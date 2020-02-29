@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import moment from 'moment';
 
 import { ReactComponent as UnlikedIcon } from '../../icons/heart.svg';
 import { ReactComponent as LikedIcon } from '../../icons/filledheart.svg';
@@ -85,6 +86,9 @@ const HumItem = ({ hum }) => {
 
     return (
         <StyledDiv>
+            <h5 style={{ letterSpacing: '0px' }}>
+                {moment(hum.posted, moment.ISO_8601).fromNow()}
+            </h5>
             <p style={{ fontWeight: 'bold' }}>{hum.content}</p>
             <div
                 style={{

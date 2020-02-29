@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const NotiItem = styled.div`
     padding: 10px 0;
@@ -12,9 +14,41 @@ const NotiItem = styled.div`
 const NotificationItem = ({ notification }) => {
     const renderText = () => {
         if (notification.kind === 'like') {
-            return <h2>{`Your post was liked by ${notification.from_id}`}</h2>;
+            return (
+                <div>
+                    <h2>
+                        Your{' '}
+                        <Link to={`/hum/${notification.link}`}>{` post `}</Link>{' '}
+                        was liked by
+                        <Link to={`/${notification.from_username}`}>
+                            {` ` + notification.from_username + `.`}
+                        </Link>
+                    </h2>
+                    <h5 style={{ letterSpacing: '0px' }}>
+                        {moment(
+                            notification.created,
+                            moment.ISO_8601
+                        ).fromNow()}
+                    </h5>
+                </div>
+            );
         } else if (notification.kind === 'follow') {
-            return <h2>{`You were followed by ${notification.link}`}</h2>;
+            return (
+                <div>
+                    <h2>
+                        <Link to={`/${notification.from_username}`}>
+                            {notification.from_username}
+                        </Link>
+                        {` followed you.`}
+                    </h2>
+                    <h5 style={{ letterSpacing: '0px' }}>
+                        {moment(
+                            notification.created,
+                            moment.ISO_8601
+                        ).fromNow()}
+                    </h5>
+                </div>
+            );
         }
     };
 
