@@ -44,6 +44,7 @@ const Home = () => {
     const [content, setContent] = useState('');
     const [charCount, setCharCount] = useState(50);
     const redirectContext = useContext(RedirectContext);
+    const [fetching, setFetching] = useState(false);
 
     const updateContent = e => {
         setContent(e.target.value);
@@ -66,9 +67,16 @@ const Home = () => {
     const postHum = async e => {
         e.preventDefault();
         try {
+            setFetching(true);
             await axios.post('/api/new/hums', {
                 content
             });
+            const source = axios.CancelToken.source();
+            fetchHums(source);
+            setFetching(false);
+            return () => {
+                source.cancel();
+            };
         } catch (err) {
             console.log(err);
         }
@@ -107,6 +115,7 @@ const Home = () => {
                             onClick={postHum}
                             fontSize="1em"
                             style={{ width: '30%' }}
+                            disabled={fetching}
                         >
                             post hum
                         </StyledButton>

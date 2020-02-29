@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 import { AuthContext } from '../components/App';
 import { StyledButton } from '../components/Styled/StyledButton';
@@ -45,6 +46,7 @@ const SignUp = () => {
     const authContext = useContext(AuthContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    let history = useHistory();
 
     const signUp = async e => {
         e.preventDefault();
@@ -58,6 +60,7 @@ const SignUp = () => {
                 type: 'FETCH_SUCCESS',
                 payload: res.data
             });
+            history.push('/login');
         } catch (err) {
             authContext.authDispatch({
                 type: 'FETCH_ERROR',

@@ -48,7 +48,7 @@ func UserHums(r *http.Request) ([]Hum, error) {
 
 // FollowerHums fetches all hums for currently followed users
 func FollowerHums(userID string) ([]Hum, error) {
-	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.from_id OR users.id = $1 INNER JOIN hums on hums.user_id = follow.to_id OR users.id = $1 WHERE users.id = $1 ORDER BY Posted DESC", userID)
+	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM users INNER JOIN follow on users.id = follow.from_id INNER JOIN hums on follow.to_id = hums.user_id WHERE users.id = $1 UNION SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username from hums WHERE hums.user_id = $1 ORDER BY Posted DESC;", userID)
 
 	if err != nil {
 		return nil, err

@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 import { AuthContext } from '../components/App';
 import { RedirectContext } from '../components/App';
@@ -53,11 +54,14 @@ const Login = () => {
     const redirectContext = useContext(RedirectContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isFetching, setIsFetching] = useState(false);
+    let history = useHistory();
 
     const fetchUser = async e => {
         e.preventDefault();
         authContext.auth.loading = true;
         try {
+            setIsFetching(true);
             const res = await axios.post('/api/login', {
                 username: username,
                 password: password
@@ -69,6 +73,8 @@ const Login = () => {
             redirectContext.redirectDispatch({
                 type: 'AUTH_TRUE'
             });
+            setIsFetching(false);
+            history.push('/home');
         } catch (err) {
             console.log(err.message);
             authContext.authDispatch({
@@ -143,7 +149,7 @@ const Login = () => {
                     <StyledButton
                         type="submit"
                         value="submit"
-                        disabled={authContext.auth.loading}
+                        disabled={isFetching}
                         onClick={fetchUser}
                         padding="12px 50px"
                         fontSize="0.8em"
