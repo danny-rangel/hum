@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as NotiIcon } from '../icons/bell.svg';
 import { ReactComponent as SearchIcon } from '../icons/search.svg';
+import { ReactComponent as HumIcon } from '../icons/hum.svg';
 import { AuthContext } from './App';
 import { RedirectContext } from './App';
 import { StyledButton } from './Styled/StyledButton';
+import media from './Styled/media';
 
 const StyledHeader = styled.header`
     width: 100%;
@@ -13,11 +15,36 @@ const StyledHeader = styled.header`
     display: flex;
     align-items: center;
     justify-content: flex-end;
+
+    ${media.medium`
+        justify-content: space-evenly;
+    `}
+`;
+
+const HumLink = styled(Link)`
+    margin-right: auto;
+    margin-left: 40px;
+
+    ${media.medium`
+        margin-left: 20px;
+    `}
+`;
+
+const StyledUL = styled.ul`
+    display: flex;
+    align-items: center;
+    ${media.medium`
+        justify-content: space-around;
+    `}
 `;
 
 const StyledLi = styled.li`
     display: inline-block;
     margin-right: 40px;
+
+    ${media.medium`
+        margin-right: 25px;
+    `}
 `;
 
 const StyledLink = styled(Link)`
@@ -39,18 +66,14 @@ const Nav = ({ setShowSidebar }) => {
 
     return (
         <StyledHeader>
-            {authContext.auth.auth ? (
-                <Link
-                    to="/home"
-                    className="line-under-dark"
-                    style={{ marginRight: 'auto', marginLeft: '40px' }}
-                >
-                    <h4>hum</h4>
-                </Link>
-            ) : null}
+            {/* {authContext.auth.auth ? ( */}
+            <HumLink to="/home" className="line-under" style={{}}>
+                <HumIcon style={{ width: '40px', height: '40px' }} />
+            </HumLink>
+            {/* ) : null} */}
             <nav>
-                <ul style={{ display: 'flex', alignItems: 'center' }}>
-                    <StyledLi className="line-under-dark">
+                <StyledUL>
+                    <StyledLi className="line-under">
                         {authContext.auth.auth ? (
                             <StyledLink to="/notifications">
                                 <SearchIcon
@@ -59,7 +82,7 @@ const Nav = ({ setShowSidebar }) => {
                             </StyledLink>
                         ) : null}
                     </StyledLi>
-                    <StyledLi className="line-under-dark">
+                    <StyledLi className="line-under">
                         {authContext.auth.auth ? (
                             <StyledLink to="/notifications">
                                 <NotiIcon
@@ -68,7 +91,7 @@ const Nav = ({ setShowSidebar }) => {
                             </StyledLink>
                         ) : null}
                     </StyledLi>
-                    <StyledLi className="line-under-dark">
+                    <StyledLi className="line-under">
                         {authContext.auth.auth ? (
                             <button
                                 style={{
@@ -85,7 +108,7 @@ const Nav = ({ setShowSidebar }) => {
                             </button>
                         ) : null}
                     </StyledLi>
-                </ul>
+                </StyledUL>
             </nav>
             {authContext.auth.auth ? null : (
                 <Link to="/login" className="login-button">

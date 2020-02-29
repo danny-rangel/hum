@@ -4,7 +4,9 @@ export const StyledButton = styled.button`
     background: transparent;
     border-radius: 0px;
     border: 1px solid palevioletred;
+    /* border: 1px solid #70b5db; */
     color: palevioletred;
+    /* color: #70b5db; */
     cursor: pointer;
     transition: all 0.3s ease 0s;
     padding: ${props => props.padding};

@@ -70,6 +70,7 @@ const Login = () => {
                 type: 'AUTH_TRUE'
             });
         } catch (err) {
+            console.log(err.message);
             authContext.authDispatch({
                 type: 'FETCH_ERROR',
                 payload: 'Invalid username or password'
@@ -135,6 +136,9 @@ const Login = () => {
                                 X
                             </ErrorButton>
                         </StyledError>
+                        // Change to reusable component
+                        // Use state instead of dispatch
+                        // to remove aler
                     )}
                     <StyledButton
                         type="submit"

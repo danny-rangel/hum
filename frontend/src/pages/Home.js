@@ -12,7 +12,6 @@ const StyledDiv = styled.div`
     flex-direction: column;
     align-items: center;
     margin-top: 50px;
-    height: 100%;
     width: 100%;
 `;
 
@@ -31,7 +30,6 @@ const StyledTextArea = styled.textarea`
         rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
         rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
     margin: 0 0 10px;
-    height: 100%;
     border: none;
     border-radius: 2px;
     font-size: 1em;
@@ -92,6 +90,7 @@ const Home = () => {
                     <StyledTextArea
                         name="content"
                         maxlength="50"
+                        rows="2"
                         placeholder="what's up?"
                         onChange={e => updateContent(e)}
                     ></StyledTextArea>
@@ -121,7 +120,13 @@ const Home = () => {
                         </h2>
                     </span>
                 </StyledForm>
-                {/* <HumList hums={hums} /> */}
+                {hums ? (
+                    <>
+                        <HumList hums={hums} />
+                    </>
+                ) : (
+                    <h4>nothing to see here...</h4>
+                )}
             </StyledDiv>
         </div>
     );

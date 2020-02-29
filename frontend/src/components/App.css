@@ -44,7 +44,7 @@ h5 {
     font-weight: 100;
     color: #2f2f2f;
     margin: 0;
-    font-size: 1.5em;
+    /* font-size: 1.5em; */
 }
 
 a {
@@ -57,24 +57,11 @@ a {
     display: block;
     width: 0%;
     height: 2px;
-    background-color: rgb(255, 255, 255);
+    background-color: #70b5db;
     transition: width 0.8s;
 }
 
 .line-under:hover::after {
-    width: 100%;
-}
-
-.line-under-dark:after {
-    content: '';
-    display: block;
-    width: 0%;
-    height: 2px;
-    background-color: #2f2f2f;
-    transition: width 0.8s;
-}
-
-.line-under-dark:hover::after {
     width: 100%;
 }
 

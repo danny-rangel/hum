@@ -1,10 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
+import styled from 'styled-components';
+import { StyledButton } from '../components/Styled/StyledButton';
+import { AuthContext } from '../components/App';
 
 import HumList from '../components/Hums/HumList';
 
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    width: 100%;
+`;
+
+const StyledAVI = styled.img`
+    width: 100px;
+    border-radius: 50%;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
+        rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
+`;
+
 const Profile = () => {
+    const authContext = useContext(AuthContext);
     const [hums, setHums] = useState(null);
     const [user, setUser] = useState(null);
     const { username } = useParams();
@@ -41,24 +61,41 @@ const Profile = () => {
     }, []);
 
     return (
-        <div>
-            <div>
+        <div className="wrapper">
+            <StyledDiv>
                 {user ? (
                     <>
-                        <img src={user.avi} alt="avi"></img>
+                        <StyledAVI src={user.avi} alt="avi"></StyledAVI>
                         <h1>{user.username}</h1>
-                        <h4>hums:{user.numposts}</h4>
+                        <h2>{`hums: ${user.numposts}`}</h2>
                         <Link to={`/followers/${user.id}`}>
-                            followers:{user.followers}
+                            <h2>{`followers: ${user.followers}`}</h2>
                         </Link>
                         <Link to={`/following/${user.id}`}>
-                            following:{user.following}
+                            <h2>{`following: ${user.following}`}</h2>
                         </Link>
-                        <button onClick={followUser}>follow</button>
+                        {authContext.auth.auth ? (
+                            authContext.auth.auth.username !== username ? (
+                                <StyledButton
+                                    padding="12px 40px"
+                                    fontSize="1em"
+                                    margin="20px"
+                                    onClick={followUser}
+                                >
+                                    follow
+                                </StyledButton>
+                            ) : null
+                        ) : null}
                     </>
                 ) : null}
-            </div>
-            <HumList hums={hums} />
+                {hums ? (
+                    <>
+                        <HumList hums={hums} />
+                    </>
+                ) : (
+                    <h4>nothing to see here...</h4>
+                )}
+            </StyledDiv>
         </div>
     );
 };

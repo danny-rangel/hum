@@ -2,8 +2,24 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { RedirectContext } from '../components/App';
+import styled from 'styled-components';
 
 import NotificationList from '../components/Notifications/NotificationList';
+
+const StyledDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+    width: 100%;
+    max-width: 400px;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 2px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
+        rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
+        rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
+    padding: 20px;
+`;
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState(null);
@@ -23,10 +39,14 @@ const Notifications = () => {
     }, []);
 
     return (
-        <>
-            {redirectContext.redirect.toLanding ? <Redirect to="/" /> : null}
-            <NotificationList notifications={notifications} />
-        </>
+        <div className="wrapper">
+            <StyledDiv>
+                {redirectContext.redirect.toLanding ? (
+                    <Redirect to="/" />
+                ) : null}
+                <NotificationList notifications={notifications} />
+            </StyledDiv>
+        </div>
     );
 };
 
