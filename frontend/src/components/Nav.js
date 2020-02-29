@@ -1,11 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as NotiIcon } from '../icons/bell.svg';
 import { ReactComponent as SearchIcon } from '../icons/search.svg';
 import { ReactComponent as HumIcon } from '../icons/hum.svg';
 import { AuthContext } from './App';
-import { RedirectContext } from './App';
 import { StyledButton } from './Styled/StyledButton';
 import media from './Styled/media';
 
@@ -24,6 +23,7 @@ const StyledHeader = styled.header`
 const HumLink = styled(Link)`
     margin-right: auto;
     margin-left: 40px;
+    border-radius: 50%;
 
     ${media.medium`
         margin-left: 20px;
@@ -55,6 +55,7 @@ const StyledLink = styled(Link)`
 const StyledAVI = styled.img`
     width: 30px;
     border-radius: 50%;
+    background-color: #ffffff;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
         rgba(0, 0, 0, 0.14) 0px 4px 5px 0px,
         rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
@@ -62,15 +63,12 @@ const StyledAVI = styled.img`
 
 const Nav = ({ setShowSidebar }) => {
     const authContext = useContext(AuthContext);
-    const redirectContext = useContext(RedirectContext);
 
     return (
         <StyledHeader>
-            {/* {authContext.auth.auth ? ( */}
-            <HumLink to="/home" className="line-under" style={{}}>
+            <HumLink to="/home" className="line-under">
                 <HumIcon style={{ width: '40px', height: '40px' }} />
             </HumLink>
-            {/* ) : null} */}
             <nav>
                 <StyledUL>
                     <StyledLi className="line-under">
@@ -91,7 +89,7 @@ const Nav = ({ setShowSidebar }) => {
                             </StyledLink>
                         ) : null}
                     </StyledLi>
-                    <StyledLi className="line-under">
+                    <StyledLi>
                         {authContext.auth.auth ? (
                             <button
                                 style={{

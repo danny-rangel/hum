@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/danny-rangel/web/hum/backend/config"
+	"github.com/danny-rangel/web/hum/backend/users"
 	"github.com/gorilla/mux"
 )
 
@@ -183,7 +184,9 @@ func Like(r *http.Request, userID string) error {
 		return err
 	}
 
-	_, err = config.DB.Exec("INSERT INTO notifications (KIND, FROM_ID, TO_ID, LINK) VALUES ($1, $2, $3, $4)", "like", userID, humUserID, h.ID)
+	user, err := users.GetUserInfo(userID, "")
+
+	_, err = config.DB.Exec("INSERT INTO notifications (KIND, FROM_ID, TO_ID, FROM_USERNAME, LINK) VALUES ($1, $2, $3, $4, $5)", "like", userID, humUserID, user.Username, h.ID)
 	if err != nil {
 		return err
 	}

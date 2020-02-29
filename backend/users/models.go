@@ -196,7 +196,7 @@ func Follow(r *http.Request, userID string) error {
 		return err
 	}
 
-	_, err = config.DB.Exec("INSERT INTO notifications (KIND,FROM_ID,TO_ID,LINK) VALUES ($1, $2, $3, $4)", "follow", userID, followee.ID, follower.Username)
+	_, err = config.DB.Exec("INSERT INTO notifications (KIND,FROM_ID,TO_ID,FROM_USERNAME,LINK) VALUES ($1, $2, $3, $4, $5)", "follow", userID, followee.ID, follower.Username, follower.Username)
 	if err != nil {
 		return err
 	}
