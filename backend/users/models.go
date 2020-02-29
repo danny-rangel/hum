@@ -249,7 +249,7 @@ func Followers(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	userID := vars["id"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on to_id = $1 AND from_id = users.id", userID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.avi, users.joined, users.followers, users.following FROM users INNER JOIN follow on to_id = $1 AND from_id = users.id", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +258,7 @@ func Followers(r *http.Request) ([]User, error) {
 	users := make([]User, 0)
 	for rows.Next() {
 		user := User{}
-		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.Joined, &user.Followers, &user.Following)
+		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.AVI, &user.Joined, &user.Followers, &user.Following)
 		if err != nil {
 			return nil, err
 		}
@@ -274,7 +274,7 @@ func Following(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	userID := vars["id"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN follow on from_id = $1 AND to_id = users.id", userID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.avi, users.joined, users.followers, users.following FROM users INNER JOIN follow on from_id = $1 AND to_id = users.id", userID)
 	if err != nil {
 		return nil, err
 	}
@@ -283,7 +283,7 @@ func Following(r *http.Request) ([]User, error) {
 	users := make([]User, 0)
 	for rows.Next() {
 		user := User{}
-		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.Joined, &user.Followers, &user.Following)
+		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.AVI, &user.Joined, &user.Followers, &user.Following)
 		if err != nil {
 			return nil, err
 		}
@@ -299,7 +299,7 @@ func Likers(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	humID := vars["humID"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.joined, users.followers, users.following FROM users INNER JOIN likes on to_id = users.id AND likes.hum_id = $1", humID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.avi, users.joined, users.followers, users.following FROM users INNER JOIN likes on to_id = users.id AND likes.hum_id = $1", humID)
 	if err != nil {
 		return nil, err
 	}
@@ -308,7 +308,7 @@ func Likers(r *http.Request) ([]User, error) {
 	users := make([]User, 0)
 	for rows.Next() {
 		user := User{}
-		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.Joined, &user.Followers, &user.Following)
+		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.AVI, &user.Joined, &user.Followers, &user.Following)
 		if err != nil {
 			return nil, err
 		}

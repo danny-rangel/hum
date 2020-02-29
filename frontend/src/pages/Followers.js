@@ -11,7 +11,6 @@ const Followers = () => {
     const fetchFollowers = async () => {
         const res = await axios.get(`/api/followers/${id}`);
         setFollowers(res.data);
-        console.log(res.data);
     };
 
     useEffect(() => {

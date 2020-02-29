@@ -11,7 +11,6 @@ const Following = () => {
     const fetchFollowing = async () => {
         const res = await axios.get(`/api/following/${id}`);
         setFollowing(res.data);
-        console.log(res.data);
     };
 
     useEffect(() => {

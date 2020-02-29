@@ -144,10 +144,10 @@ const App = () => {
                             </Route>
                             <Route
                                 render={() => (
-                                    <h4>
+                                    <h2>
                                         there doesn't seem to be anything
                                         here...
-                                    </h4>
+                                    </h2>
                                 )}
                             />
                         </Switch>

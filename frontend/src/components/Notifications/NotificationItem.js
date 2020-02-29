@@ -18,11 +18,18 @@ const NotificationItem = ({ notification }) => {
                 <div>
                     <h2>
                         Your{' '}
-                        <Link to={`/hum/${notification.link}`}>{` post `}</Link>{' '}
+                        <Link
+                            to={`/hum/${notification.link}`}
+                            style={{ fontWeight: 'bold' }}
+                        >{` post `}</Link>{' '}
                         was liked by
-                        <Link to={`/${notification.from_username}`}>
-                            {` ` + notification.from_username + `.`}
+                        <Link
+                            to={`/${notification.from_username}`}
+                            style={{ fontWeight: 'bold' }}
+                        >
+                            {` ` + notification.from_username}
                         </Link>
+                        .
                     </h2>
                     <h5 style={{ letterSpacing: '0px' }}>
                         {moment(
@@ -36,7 +43,10 @@ const NotificationItem = ({ notification }) => {
             return (
                 <div>
                     <h2>
-                        <Link to={`/${notification.from_username}`}>
+                        <Link
+                            to={`/${notification.from_username}`}
+                            style={{ fontWeight: 'bold' }}
+                        >
                             {notification.from_username}
                         </Link>
                         {` followed you.`}
