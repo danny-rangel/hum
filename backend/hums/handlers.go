@@ -7,6 +7,21 @@ import (
 	"github.com/danny-rangel/web/hum/backend/middleware"
 )
 
+func GetHum(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
+		return
+	}
+
+	hum, err := FetchHum(r)
+	if err != nil {
+		http.Error(w, http.StatusText(500), http.StatusInternalServerError)
+		return
+	}
+
+	json.NewEncoder(w).Encode(hum)
+}
+
 // GetUserHums runs the UserHums function
 func GetUserHums(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {

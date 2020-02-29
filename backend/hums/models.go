@@ -21,6 +21,31 @@ type Hum struct {
 	Username string `json:"username"`
 }
 
+func FetchHum(r *http.Request) (Hum, error) {
+	vars := mux.Vars(r)
+	humID := vars["humID"]
+
+	rows, err := config.DB.Query("SELECT hums.id, hums.content, hums.likes, hums.posted, hums.user_id, hums.username FROM hums WHERE hums.id=$1", humID)
+	if err != nil {
+		return Hum{}, err
+	}
+
+	defer rows.Close()
+
+	var hum Hum
+
+	for rows.Next() {
+		err := rows.Scan(&hum.ID, &hum.Content, &hum.Likes, &hum.Posted, &hum.UserID, &hum.Username)
+		if err != nil {
+			return Hum{}, err
+		}
+	}
+	if err = rows.Err(); err != nil {
+		return Hum{}, err
+	}
+	return hum, nil
+}
+
 // UserHums fetches all hums for specific user
 func UserHums(r *http.Request) ([]Hum, error) {
 	vars := mux.Vars(r)

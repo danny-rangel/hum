@@ -33,6 +33,7 @@ func main() {
 	r.HandleFunc("/api/isfollowing/{id}", users.CheckIsFollowing)
 	r.HandleFunc("/api/isliked/{humID}", hums.CheckIsLiked)
 	r.HandleFunc("/api/likes/{humID}", hums.GetLikeCount)
+	r.HandleFunc("/api/hum/{humID}", hums.GetHum)
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }

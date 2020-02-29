@@ -299,7 +299,7 @@ func Likers(r *http.Request) ([]User, error) {
 	vars := mux.Vars(r)
 	humID := vars["humID"]
 
-	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.avi, users.joined, users.followers, users.following FROM users INNER JOIN likes on to_id = users.id AND likes.hum_id = $1", humID)
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.avi, users.joined, users.followers, users.following FROM users INNER JOIN likes on from_id = users.id AND likes.hum_id = $1", humID)
 	if err != nil {
 		return nil, err
 	}
