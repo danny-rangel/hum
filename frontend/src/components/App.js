@@ -14,6 +14,7 @@ import Likes from '../pages/Likes';
 import Followers from '../pages/Followers';
 import Following from '../pages/Following';
 import Sidebar from './Sidebar';
+import Edit from '../pages/Edit';
 
 export const AuthContext = React.createContext();
 export const RedirectContext = React.createContext();
@@ -137,6 +138,9 @@ const App = () => {
                             </Route>
                             <Route path="/following/:id" exact>
                                 <Following />
+                            </Route>
+                            <Route path="/edit/:id" exact>
+                                <Edit />
                             </Route>
                             <Route
                                 render={() => (

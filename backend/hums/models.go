@@ -224,3 +224,51 @@ func Unlike(r *http.Request, userID string) error {
 
 	return nil
 }
+
+func isLiked(r *http.Request, userID string) (bool, error) {
+	vars := mux.Vars(r)
+	humID := vars["humID"]
+
+	rows, err := config.DB.Query("SELECT CASE WHEN EXISTS (SELECT  likes.id FROM likes WHERE likes.from_id=$1 and likes.hum_id=$2) THEN 1 ELSE 0 END", userID, humID)
+
+	if err != nil {
+		return false, err
+	}
+	defer rows.Close()
+
+	var exists int
+
+	for rows.Next() {
+		if err := rows.Scan(&exists); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	if exists == 1 {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func likeCount(r *http.Request) (int, error) {
+	vars := mux.Vars(r)
+	humID := vars["humID"]
+
+	rows, err := config.DB.Query("SELECT COUNT(*) FROM likes WHERE likes.hum_id = $1", humID)
+
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+
+	var numLikes int
+
+	for rows.Next() {
+		if err := rows.Scan(&numLikes); err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	return numLikes, nil
+}

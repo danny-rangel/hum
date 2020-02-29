@@ -45,7 +45,13 @@ const Notifications = () => {
                 {redirectContext.redirect.toLanding ? (
                     <Redirect to="/" />
                 ) : null}
-                <NotificationList notifications={notifications} />
+                {notifications ? (
+                    notifications.length === 0 ? (
+                        <p>No notifications</p>
+                    ) : (
+                        <NotificationList notifications={notifications} />
+                    )
+                ) : null}
             </StyledDiv>
         </div>
     );

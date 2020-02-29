@@ -28,29 +28,37 @@ const Profile = () => {
     const [hums, setHums] = useState(null);
     const [user, setUser] = useState(null);
     const [isFollowing, setIsFollowing] = useState(null);
+    const [followersCount, setFollowersCount] = useState(null);
     const { username } = useParams();
 
-    const fetchProfile = async () => {
+    const fetchProfile = async source => {
         try {
-            const res = await axios.get(`/api/user/${username}`);
+            const res = await axios.get(`/api/user/${username}`, {
+                cancelToken: source.token
+            });
             setUser(res.data);
+            setFollowersCount(res.data.followers);
         } catch (err) {
             console.log(err);
         }
     };
 
-    const fetchIsFollowing = async () => {
+    const fetchIsFollowing = async source => {
         try {
-            const isFollowing = await axios.get(`/api/isfollowing/${user.id}`);
+            const isFollowing = await axios.get(`/api/isfollowing/${user.id}`, {
+                cancelToken: source.token
+            });
             setIsFollowing(isFollowing.data);
         } catch (err) {
             console.log(err);
         }
     };
 
-    const fetchHums = async () => {
+    const fetchHums = async source => {
         try {
-            const res = await axios.get(`/api/hums/${username}`);
+            const res = await axios.get(`/api/hums/${username}`, {
+                cancelToken: source.token
+            });
             setHums(res.data);
         } catch (err) {
             console.log(err);
@@ -59,9 +67,14 @@ const Profile = () => {
 
     const followUser = async () => {
         try {
+            setFollowersCount(followersCount + 1);
+            const source = axios.CancelToken.source();
             setIsFollowing(true);
-            await axios.get(`/api/follow/${username}`);
-            fetchIsFollowing();
+            await axios.get(`/api/follow/${username}`, {
+                cancelToken: source.token
+            });
+            fetchIsFollowing(source);
+            fetchProfile(source);
         } catch (err) {
             console.log(err);
         }
@@ -69,23 +82,36 @@ const Profile = () => {
 
     const unfollowUser = async () => {
         try {
+            setFollowersCount(followersCount - 1);
+            const source = axios.CancelToken.source();
             setIsFollowing(false);
-            await axios.get(`/api/unfollow/${username}`);
-            fetchIsFollowing();
+            await axios.get(`/api/unfollow/${username}`, {
+                cancelToken: source.token
+            });
+            fetchIsFollowing(source);
+            fetchProfile(source);
         } catch (err) {
             console.log(err);
         }
     };
 
     useEffect(() => {
+        const source = axios.CancelToken.source();
         if (user) {
-            fetchIsFollowing();
+            fetchIsFollowing(source);
         }
+        return () => {
+            source.cancel();
+        };
     }, [user]);
 
     useEffect(() => {
-        fetchProfile();
-        fetchHums();
+        const source = axios.CancelToken.source();
+        fetchProfile(source);
+        fetchHums(source);
+        return () => {
+            source.cancel();
+        };
     }, [username]);
 
     return (
@@ -97,7 +123,7 @@ const Profile = () => {
                         <h1>{user.username}</h1>
                         <h2>{`hums: ${user.numposts}`}</h2>
                         <Link to={`/followers/${user.id}`}>
-                            <h2>{`followers: ${user.followers}`}</h2>
+                            <h2>{`followers: ${followersCount}`}</h2>
                         </Link>
                         <Link to={`/following/${user.id}`}>
                             <h2>{`following: ${user.following}`}</h2>
@@ -123,7 +149,17 @@ const Profile = () => {
                                         follow
                                     </StyledButton>
                                 )
-                            ) : null
+                            ) : (
+                                <Link to={`/edit/${authContext.auth.auth.id}`}>
+                                    <StyledButton
+                                        padding="12px 40px"
+                                        fontSize="1em"
+                                        margin="20px"
+                                    >
+                                        edit
+                                    </StyledButton>
+                                </Link>
+                            )
                         ) : null}
                     </>
                 ) : null}

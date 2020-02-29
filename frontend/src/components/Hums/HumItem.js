@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -27,11 +27,57 @@ const StyledDiv = styled.div`
 `;
 
 const HumItem = ({ hum }) => {
+    const [isLiked, setIsLiked] = useState(null);
+    const [likes, setLikes] = useState(null);
+
+    const fetchIsLiked = async source => {
+        const isLiked = await axios.get(`/api/isliked/${hum.id}`, {
+            cancelToken: source.token
+        });
+        setIsLiked(isLiked.data);
+    };
+
+    const fetchLikeCount = async source => {
+        const res = await axios.get(`/api/likes/${hum.id}`, {
+            cancelToken: source.token
+        });
+        setLikes(res.data);
+    };
+
+    useEffect(() => {
+        const source = axios.CancelToken.source();
+        fetchIsLiked(source);
+        fetchLikeCount(source);
+        return () => {
+            source.cancel();
+        };
+    }, []);
+
     const likeHum = async () => {
         try {
+            const source = axios.CancelToken.source();
+            setIsLiked(true);
+            setLikes(likes + 1);
             await axios.post('/api/like', {
                 id: hum.id
             });
+            fetchIsLiked(source);
+            fetchLikeCount(source);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const unlikeHum = async () => {
+        try {
+            const source = axios.CancelToken.source();
+            setIsLiked(false);
+            setLikes(likes - 1);
+            await axios.post('/api/unlike', {
+                id: hum.id
+            });
+            fetchIsLiked(source);
+            fetchLikeCount(source);
         } catch (err) {
             console.log(err);
         }
@@ -57,17 +103,27 @@ const HumItem = ({ hum }) => {
                 >
                     <button
                         style={{ border: 'none', background: 'transparent' }}
-                        onClick={likeHum}
+                        onClick={isLiked ? unlikeHum : likeHum}
                     >
-                        <UnlikedIcon
-                            style={{
-                                width: '20px',
-                                height: '20px',
-                                cursor: 'pointer'
-                            }}
-                        />
+                        {isLiked ? (
+                            <LikedIcon
+                                style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    cursor: 'pointer'
+                                }}
+                            />
+                        ) : (
+                            <UnlikedIcon
+                                style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    cursor: 'pointer'
+                                }}
+                            />
+                        )}
                     </button>
-                    <Link to={`/likes/${hum.id}`}>{`${hum.likes} likes`}</Link>
+                    <Link to={`/likes/${hum.id}`}>{`${likes} likes`}</Link>
                 </div>
             </div>
         </StyledDiv>
