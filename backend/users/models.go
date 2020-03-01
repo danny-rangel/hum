@@ -28,6 +28,10 @@ type User struct {
 	Joined    string `json:"joined"`
 }
 
+type SearchData struct {
+	Username string `json:"username"`
+}
+
 func CurrentUser(r *http.Request) (User, error) {
 	c, err := r.Cookie("session_token")
 	if err != nil {
@@ -344,4 +348,29 @@ func isFollowing(r *http.Request, userID string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func Search(r *http.Request, userID string) (User, error) {
+	d := json.NewDecoder(r.Body)
+	sd := SearchData{}
+	err := d.Decode(&sd)
+
+	rows, err := config.DB.Query("SELECT users.id, users.username, users.numposts, users.followers, users.following, users.avi, users.joined FROM users WHERE users.username LIKE $1", sd.Username)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	defer rows.Close()
+
+	user := User{}
+
+	for rows.Next() {
+		err := rows.Scan(&user.ID, &user.Username, &user.NumPosts, &user.Followers, &user.Following, &user.AVI, &user.Joined)
+		if err != nil {
+			return User{}, err
+		}
+	}
+
+	return user, nil
 }
