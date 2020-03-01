@@ -8,12 +8,11 @@ import { RedirectContext } from '../components/App';
 import { Redirect } from 'react-router-dom';
 
 const StyledDiv = styled.div`
-    display: grid;
-    grid-template-rows: 60px 150px 1fr;
-    grid-template-columns: 1fr;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
+    height: 100%;
     width: 100%;
 `;
 
@@ -35,16 +34,15 @@ const Search = () => {
             {redirectContext.redirect.toLanding ? <Redirect to="/" /> : null}
             <div className="wrapper">
                 <StyledDiv>
-                    <h1 style={{ justifySelf: 'center' }}>search</h1>
+                    <h1>search</h1>
                     <form
                         method="post"
                         style={{
                             display: 'flex',
                             flexDirection: 'column',
                             width: '100%',
-                            height: '100%',
-                            justifyContent: 'space-evenly',
-                            alignItems: 'center'
+                            alignItems: 'center',
+                            margin: '30px 0 0 0'
                         }}
                     >
                         <StyledInput
@@ -59,6 +57,7 @@ const Search = () => {
                             style={{ width: '100%', maxWidth: '200px' }}
                             padding="10px 20px"
                             fontSize="1.2em"
+                            margin="20px 0"
                             onClick={e => searchUser(e)}
                         >
                             search

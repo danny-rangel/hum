@@ -17,7 +17,12 @@ const Following = () => {
         fetchFollowing();
     }, []);
 
-    return <UserList users={following} />;
+    return (
+        <div className="wrapper">
+            <h1 style={{ textAlign: 'center' }}>following</h1>
+            <UserList users={following} />
+        </div>
+    );
 };
 
 export default Following;

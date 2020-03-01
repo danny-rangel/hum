@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 
 import { RedirectContext } from '../components/App';
+import { AuthContext } from '../components/App';
 import { StyledButton } from '../components/Styled/StyledButton';
 import { StyledInput } from './SignUp';
 import { StyledAVI } from './Profile';
@@ -37,6 +38,7 @@ const StyledAVIInput = styled.input`
 
 const Edit = () => {
     const redirectContext = useContext(RedirectContext);
+    const authContext = useContext(AuthContext);
     const [user, setUser] = useState(null);
     const [newUsername, setNewUsername] = useState(null);
     const [newImage, setNewImage] = useState(null);
@@ -60,7 +62,12 @@ const Edit = () => {
         }
 
         formData.append('username', JSON.stringify(newUsername));
-        const res = await axios.post('/api/update', formData);
+        const updateRes = await axios.post('/api/update', formData);
+        const res = await axios.get(`/api/user/${updateRes.data.username}`);
+        authContext.authDispatch({
+            type: 'FETCH_SUCCESS',
+            payload: res.data
+        });
         history.push(`/${res.data.username}`);
     };
 

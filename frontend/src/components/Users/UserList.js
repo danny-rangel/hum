@@ -25,11 +25,7 @@ const UserList = ({ users }) => {
         });
     };
 
-    return (
-        <div className="wrapper">
-            <StyledDiv>{users ? renderUsers() : null}</StyledDiv>
-        </div>
-    );
+    return <StyledDiv>{users ? renderUsers() : null}</StyledDiv>;
 };
 
 export default UserList;

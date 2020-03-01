@@ -17,7 +17,12 @@ const Likes = () => {
         fetchLikes();
     }, []);
 
-    return <UserList users={likes} />;
+    return (
+        <div className="wrapper">
+            <h1 style={{ textAlign: 'center' }}>likes</h1>
+            <UserList users={likes} />
+        </div>
+    );
 };
 
 export default Likes;

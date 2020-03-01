@@ -10,14 +10,12 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-	"path/filepath"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/danny-rangel/web/hum/backend/config"
-	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
@@ -419,7 +417,7 @@ func Update(r *http.Request, userID string) (User, error) {
 			fmt.Println("Could not create session")
 		}
 
-		fileName, err := UploadFileToS3(s, avi, handler, bucket)
+		fileName, err := UploadFileToS3(s, avi, handler, bucket, userID)
 		if err != nil {
 			fmt.Println("Could not upload file")
 		}
@@ -458,12 +456,12 @@ func Update(r *http.Request, userID string) (User, error) {
 
 }
 
-func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader, bucket string) (string, error) {
+func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader, bucket string, userID string) (string, error) {
 	size := fileHeader.Size
 	buffer := make([]byte, size)
 	file.Read(buffer)
 
-	tempFileName := "pictures/" + uuid.New().String() + filepath.Ext(fileHeader.Filename)
+	tempFileName := "pictures/" + userID
 
 	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
 		Bucket:               aws.String(bucket),
