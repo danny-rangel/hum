@@ -1,14 +1,25 @@
 package users
 
 import (
+	"bytes"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/danny-rangel/web/hum/backend/config"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -373,4 +384,101 @@ func Search(r *http.Request, userID string) (User, error) {
 	}
 
 	return user, nil
+}
+
+func Update(r *http.Request, userID string) (User, error) {
+	avi, handler, err := r.FormFile("avi")
+	username := r.FormValue("username")
+	username = username[1 : len(username)-1]
+
+	if avi != nil {
+		if err := godotenv.Load(); err != nil {
+			log.Print("No .env file found")
+		}
+
+		region, ok := os.LookupEnv("AWSREGION")
+		akID, ok := os.LookupEnv("ACCESSKEYID")
+		secret, ok := os.LookupEnv("SECRETACCESSKEY")
+		bucket, ok := os.LookupEnv("AWSBUCKET")
+
+		if !ok {
+			panic(errors.New("Error retrieving variables"))
+		}
+
+		var aviURL string
+
+		s, err := session.NewSession(&aws.Config{
+			Region: aws.String(region),
+			Credentials: credentials.NewStaticCredentials(
+				akID,
+				secret,
+				""),
+		})
+
+		if err != nil {
+			fmt.Println("Could not create session")
+		}
+
+		fileName, err := UploadFileToS3(s, avi, handler, bucket)
+		if err != nil {
+			fmt.Println("Could not upload file")
+		}
+
+		aviURL = "https://hum.s3.us-west-1.amazonaws.com/" + fileName
+
+		_, err = config.DB.Exec("UPDATE users SET username = $1, avi = $2 WHERE id = $3", username, aviURL, userID)
+
+		if err != nil {
+			return User{}, err
+		}
+
+		u, err := GetUserInfo(userID, "")
+
+		if err != nil {
+			return User{}, errors.New("Error fetching new user")
+		}
+
+		return u, nil
+
+	}
+
+	_, err = config.DB.Exec("UPDATE users SET username = $1 WHERE id = $2", username, userID)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	u, err := GetUserInfo(userID, "")
+
+	if err != nil {
+		return User{}, errors.New("Error fetching new user")
+	}
+
+	return u, nil
+
+}
+
+func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader, bucket string) (string, error) {
+	size := fileHeader.Size
+	buffer := make([]byte, size)
+	file.Read(buffer)
+
+	tempFileName := "pictures/" + uuid.New().String() + filepath.Ext(fileHeader.Filename)
+
+	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
+		Bucket:               aws.String(bucket),
+		Key:                  aws.String(tempFileName),
+		ACL:                  aws.String("public-read"),
+		Body:                 bytes.NewReader(buffer),
+		ContentLength:        aws.Int64(int64(size)),
+		ContentType:          aws.String(http.DetectContentType(buffer)),
+		ContentDisposition:   aws.String("attachment"),
+		ServerSideEncryption: aws.String("AES256"),
+		StorageClass:         aws.String("INTELLIGENT_TIERING"),
+	})
+	if err != nil {
+		return "", err
+	}
+
+	return tempFileName, err
 }

@@ -15,8 +15,9 @@ const StyledDiv = styled.div`
     width: 100%;
 `;
 
-const StyledAVI = styled.img`
+export const StyledAVI = styled.img`
     width: 100px;
+    height: 100px;
     border-radius: 50%;
     background-color: #ffffff;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
@@ -151,7 +152,9 @@ const Profile = () => {
                                     </StyledButton>
                                 )
                             ) : (
-                                <Link to={`/edit/${authContext.auth.auth.id}`}>
+                                <Link
+                                    to={`/edit/${authContext.auth.auth.username}`}
+                                >
                                     <StyledButton
                                         padding="12px 40px"
                                         fontSize="1em"

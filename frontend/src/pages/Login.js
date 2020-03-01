@@ -76,7 +76,6 @@ const Login = () => {
             setIsFetching(false);
             history.push('/home');
         } catch (err) {
-            console.log(err.message);
             authContext.authDispatch({
                 type: 'FETCH_ERROR',
                 payload: 'Invalid username or password'

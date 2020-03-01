@@ -144,7 +144,7 @@ const App = () => {
                             <Route path="/following/:id" exact>
                                 <Following />
                             </Route>
-                            <Route path="/edit/:id" exact>
+                            <Route path="/edit/:username" exact>
                                 <Edit />
                             </Route>
                             <Route path="/hum/:humID" exact>

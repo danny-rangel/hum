@@ -54,6 +54,7 @@ const StyledLink = styled(Link)`
 
 const StyledAVI = styled.img`
     width: 30px;
+    height: 30px;
     border-radius: 50%;
     background-color: #ffffff;
     box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 4px -1px,
