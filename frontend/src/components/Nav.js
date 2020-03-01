@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { ReactComponent as NotiIcon } from '../icons/bell.svg';
@@ -73,7 +73,7 @@ const Nav = ({ setShowSidebar }) => {
                 <StyledUL>
                     <StyledLi className="line-under">
                         {authContext.auth.auth ? (
-                            <StyledLink to="/notifications">
+                            <StyledLink to="/search">
                                 <SearchIcon
                                     style={{ width: '30px', height: '30px' }}
                                 />

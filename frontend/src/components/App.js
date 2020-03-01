@@ -16,6 +16,7 @@ import Following from '../pages/Following';
 import Sidebar from './Sidebar';
 import Edit from '../pages/Edit';
 import ViewHum from '../pages/ViewHum';
+import Search from '../pages/Search';
 
 export const AuthContext = React.createContext();
 export const RedirectContext = React.createContext();
@@ -118,6 +119,9 @@ const App = () => {
                             </Route>
                             <Route path="/home" exact>
                                 <Home />
+                            </Route>
+                            <Route path="/search" exact>
+                                <Search />
                             </Route>
                             <Route path="/signup" exact>
                                 <SignUp />

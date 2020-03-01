@@ -33,6 +33,7 @@ export const StyledForm = styled.form`
 
 export const StyledInput = styled.input`
     width: 80%;
+    max-width: 400px;
     height: 40px;
     border-radius: 4px;
     border: none;

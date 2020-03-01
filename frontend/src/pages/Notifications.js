@@ -8,7 +8,7 @@ import NotificationList from '../components/Notifications/NotificationList';
 
 const StyledDiv = styled.div`
     display: flex;
-    margin: 50px auto;
+    margin: 30px auto;
     flex-direction: column;
     box-sizing: border-box;
     width: 100%;
@@ -41,10 +41,12 @@ const Notifications = () => {
 
     return (
         <div className="wrapper">
+            <h1 style={{ textAlign: 'center' }}>notifications</h1>
             <StyledDiv>
                 {redirectContext.redirect.toLanding ? (
                     <Redirect to="/" />
                 ) : null}
+
                 {notifications ? (
                     notifications.length === 0 ? (
                         <p>No notifications</p>
