@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
 
@@ -33,21 +33,26 @@ const HumItem = ({ hum, fetchHums }) => {
     const [isLiked, setIsLiked] = useState(null);
     const [likes, setLikes] = useState(null);
     const authContext = useContext(AuthContext);
-    let history = useHistory();
 
-    const fetchIsLiked = async source => {
-        const isLiked = await axios.get(`/api/isliked/${hum.id}`, {
-            cancelToken: source.token
-        });
-        setIsLiked(isLiked.data);
-    };
+    const fetchIsLiked = useCallback(
+        async source => {
+            const isLiked = await axios.get(`/api/isliked/${hum.id}`, {
+                cancelToken: source.token
+            });
+            setIsLiked(isLiked.data);
+        },
+        [hum]
+    );
 
-    const fetchLikeCount = async source => {
-        const res = await axios.get(`/api/likes/${hum.id}`, {
-            cancelToken: source.token
-        });
-        setLikes(res.data);
-    };
+    const fetchLikeCount = useCallback(
+        async source => {
+            const res = await axios.get(`/api/likes/${hum.id}`, {
+                cancelToken: source.token
+            });
+            setLikes(res.data);
+        },
+        [hum]
+    );
 
     useEffect(() => {
         const source = axios.CancelToken.source();
@@ -56,7 +61,7 @@ const HumItem = ({ hum, fetchHums }) => {
         return () => {
             source.cancel();
         };
-    }, []);
+    }, [fetchIsLiked, fetchLikeCount]);
 
     const likeHum = async () => {
         try {

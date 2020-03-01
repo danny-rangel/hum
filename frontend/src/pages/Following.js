@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -8,14 +8,14 @@ const Following = () => {
     const [following, setFollowing] = useState(null);
     const { id } = useParams();
 
-    const fetchFollowing = async () => {
+    const fetchFollowing = useCallback(async () => {
         const res = await axios.get(`/api/following/${id}`);
         setFollowing(res.data);
-    };
+    }, [id]);
 
     useEffect(() => {
         fetchFollowing();
-    }, []);
+    }, [fetchFollowing]);
 
     return (
         <div className="wrapper">

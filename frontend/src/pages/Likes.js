@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -8,14 +8,14 @@ const Likes = () => {
     const [likes, setLikes] = useState(null);
     const { humID } = useParams();
 
-    const fetchLikes = async () => {
+    const fetchLikes = useCallback(async () => {
         const res = await axios.get(`/api/likers/${humID}`);
         setLikes(res.data);
-    };
+    }, [humID]);
 
     useEffect(() => {
         fetchLikes();
-    }, []);
+    }, [fetchLikes]);
 
     return (
         <div className="wrapper">

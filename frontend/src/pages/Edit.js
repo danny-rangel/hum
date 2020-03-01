@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
@@ -17,25 +17,6 @@ const StyledDiv = styled.div`
     width: 100%;
 `;
 
-const StyledAVIInput = styled.input`
-    background: transparent;
-    border-radius: 0px;
-    /* border: 1px solid palevioletred; */
-    color: palevioletred;
-    cursor: pointer;
-    transition: all 0.3s ease 0s;
-    padding: 12px 40px;
-    font-size: 1em;
-    margin: 20px;
-    width: 50px;
-    height: 50px;
-
-    :hover {
-        background-color: palevioletred;
-        color: white;
-    }
-`;
-
 const Edit = () => {
     const redirectContext = useContext(RedirectContext);
     const authContext = useContext(AuthContext);
@@ -45,11 +26,11 @@ const Edit = () => {
     const { username } = useParams();
     let history = useHistory();
 
-    const fetchProfile = async () => {
+    const fetchProfile = useCallback(async () => {
         const res = await axios.get(`/api/user/${username}`);
         setUser(res.data);
         setNewUsername(res.data.username);
-    };
+    }, [username]);
 
     const fileHandler = e => {
         setNewImage(e.target.files[0]);
@@ -73,7 +54,7 @@ const Edit = () => {
 
     useEffect(() => {
         fetchProfile();
-    }, []);
+    }, [fetchProfile]);
 
     return (
         <>
@@ -102,10 +83,11 @@ const Edit = () => {
                         ></input>
                         <label htmlFor="file">Upload</label>
                     </div>
+                    {newImage ? <p>{newImage.name}</p> : null}
                     <StyledButton
                         padding="12px 40px"
                         fontSize="1em"
-                        margin="50px 20px"
+                        margin="40px 20px"
                         onClick={saveUser}
                     >
                         save

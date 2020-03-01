@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -33,39 +33,51 @@ const Profile = () => {
     const [followersCount, setFollowersCount] = useState(null);
     const { username } = useParams();
 
-    const fetchProfile = async source => {
-        try {
-            const res = await axios.get(`/api/user/${username}`, {
-                cancelToken: source.token
-            });
-            setUser(res.data);
-            setFollowersCount(res.data.followers);
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    const fetchProfile = useCallback(
+        async source => {
+            try {
+                const res = await axios.get(`/api/user/${username}`, {
+                    cancelToken: source.token
+                });
+                setUser(res.data);
+                setFollowersCount(res.data.followers);
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        [username]
+    );
 
-    const fetchIsFollowing = async source => {
-        try {
-            const isFollowing = await axios.get(`/api/isfollowing/${user.id}`, {
-                cancelToken: source.token
-            });
-            setIsFollowing(isFollowing.data);
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    const fetchIsFollowing = useCallback(
+        async source => {
+            try {
+                const isFollowing = await axios.get(
+                    `/api/isfollowing/${user.id}`,
+                    {
+                        cancelToken: source.token
+                    }
+                );
+                setIsFollowing(isFollowing.data);
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        [user]
+    );
 
-    const fetchHums = async source => {
-        try {
-            const res = await axios.get(`/api/hums/${username}`, {
-                cancelToken: source.token
-            });
-            setHums(res.data);
-        } catch (err) {
-            console.log(err);
-        }
-    };
+    const fetchHums = useCallback(
+        async source => {
+            try {
+                const res = await axios.get(`/api/hums/${username}`, {
+                    cancelToken: source.token
+                });
+                setHums(res.data);
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        [username]
+    );
 
     const followUser = async () => {
         try {
@@ -105,7 +117,7 @@ const Profile = () => {
         return () => {
             source.cancel();
         };
-    }, [user]);
+    }, [user, fetchIsFollowing]);
 
     useEffect(() => {
         const source = axios.CancelToken.source();
@@ -114,7 +126,7 @@ const Profile = () => {
         return () => {
             source.cancel();
         };
-    }, [username]);
+    }, [username, fetchProfile, fetchHums]);
 
     return (
         <div className="wrapper">

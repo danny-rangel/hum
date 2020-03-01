@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import HumItem from '../components/Hums/HumItem';
@@ -16,14 +16,14 @@ const ViewHum = () => {
     const { humID } = useParams();
     const [hum, setHum] = useState(null);
 
-    const fetchHum = async () => {
+    const fetchHum = useCallback(async () => {
         const res = await axios.get(`/api/hum/${humID}`);
         setHum(res.data);
-    };
+    }, [humID]);
 
     useEffect(() => {
         fetchHum();
-    }, [humID]);
+    }, [humID, fetchHum]);
 
     return (
         <div className="wrapper">
