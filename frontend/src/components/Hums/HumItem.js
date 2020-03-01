@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
 
+import { AuthContext } from '../App';
 import { ReactComponent as UnlikedIcon } from '../../icons/heart.svg';
 import { ReactComponent as LikedIcon } from '../../icons/filledheart.svg';
+import { ReactComponent as TrashIcon } from '../../icons/garbage.svg';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -27,9 +29,11 @@ const StyledDiv = styled.div`
     word-wrap: break-word;
 `;
 
-const HumItem = ({ hum }) => {
+const HumItem = ({ hum, fetchHums }) => {
     const [isLiked, setIsLiked] = useState(null);
     const [likes, setLikes] = useState(null);
+    const authContext = useContext(AuthContext);
+    let history = useHistory();
 
     const fetchIsLiked = async source => {
         const isLiked = await axios.get(`/api/isliked/${hum.id}`, {
@@ -84,11 +88,45 @@ const HumItem = ({ hum }) => {
         }
     };
 
+    const deleteHum = async () => {
+        try {
+            const source = axios.CancelToken.source();
+            await axios.delete(`/api/delete/hums/${hum.id}`, {
+                cancelToken: source.token
+            });
+            fetchHums(source);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <StyledDiv>
-            <h5 style={{ letterSpacing: '0px' }}>
-                {moment(hum.posted, moment.ISO_8601).fromNow()}
-            </h5>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <h5 style={{ letterSpacing: '0px' }}>
+                    {moment(hum.posted, moment.ISO_8601).fromNow()}
+                </h5>
+                {authContext.auth.auth ? (
+                    authContext.auth.auth.id === hum.user_id ? (
+                        <button
+                            style={{
+                                border: 'none',
+                                background: 'transparent',
+                                padding: 0
+                            }}
+                            onClick={deleteHum}
+                        >
+                            <TrashIcon
+                                style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    cursor: 'pointer'
+                                }}
+                            />
+                        </button>
+                    ) : null
+                ) : null}
+            </div>
             <p style={{ fontWeight: 'bold' }}>{hum.content}</p>
             <div
                 style={{

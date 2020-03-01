@@ -169,7 +169,7 @@ const Profile = () => {
                 ) : null}
                 {hums ? (
                     <>
-                        <HumList hums={hums} />
+                        <HumList hums={hums} fetchHums={fetchHums} />
                     </>
                 ) : (
                     <h4>nothing to see here...</h4>
