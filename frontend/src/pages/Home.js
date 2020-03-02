@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
 import { RedirectContext } from '../components/App';
 import { StyledButton } from '../components/Styled/StyledButton';
+import Spinner from '../components/Styled/Spinner';
 
 import HumList from '../components/Hums/HumList';
 
@@ -130,11 +131,15 @@ const Home = () => {
                     </span>
                 </StyledForm>
                 {hums ? (
-                    <>
-                        <HumList hums={hums} fetchHums={fetchHums} />
-                    </>
+                    hums.length === 0 ? (
+                        <h4>nothing to see here...</h4>
+                    ) : (
+                        <>
+                            <HumList hums={hums} fetchHums={fetchHums} />
+                        </>
+                    )
                 ) : (
-                    <h4>nothing to see here...</h4>
+                    <Spinner />
                 )}
             </StyledDiv>
         </div>

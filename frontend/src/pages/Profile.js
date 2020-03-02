@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { StyledButton } from '../components/Styled/StyledButton';
 import { AuthContext } from '../components/App';
+import Spinner from '../components/Styled/Spinner';
 
 import HumList from '../components/Hums/HumList';
 
@@ -180,11 +181,15 @@ const Profile = () => {
                     </>
                 ) : null}
                 {hums ? (
-                    <>
-                        <HumList hums={hums} fetchHums={fetchHums} />
-                    </>
+                    hums.length === 0 ? (
+                        <h4>nothing to see here...</h4>
+                    ) : (
+                        <>
+                            <HumList hums={hums} fetchHums={fetchHums} />
+                        </>
+                    )
                 ) : (
-                    <h4>nothing to see here...</h4>
+                    <Spinner />
                 )}
             </StyledDiv>
         </div>

@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { RedirectContext } from '../components/App';
 import styled from 'styled-components';
 
+import Spinner from '../components/Styled/Spinner';
 import NotificationList from '../components/Notifications/NotificationList';
 
 const StyledDiv = styled.div`
@@ -53,7 +54,9 @@ const Notifications = () => {
                     ) : (
                         <NotificationList notifications={notifications} />
                     )
-                ) : null}
+                ) : (
+                    <Spinner />
+                )}
             </StyledDiv>
         </div>
     );

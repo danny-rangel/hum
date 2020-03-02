@@ -31,7 +31,7 @@ const StyledDiv = styled.div`
 
 const HumItem = ({ hum, fetchHums }) => {
     const [isLiked, setIsLiked] = useState(null);
-    const [likes, setLikes] = useState(null);
+    const [likes, setLikes] = useState(0);
     const authContext = useContext(AuthContext);
 
     const fetchIsLiked = useCallback(
