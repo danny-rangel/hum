@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/danny-rangel/web/hum/backend/hums"
 	"github.com/danny-rangel/web/hum/backend/notifications"
@@ -40,15 +44,43 @@ func main() {
 	r.HandleFunc("/api/search", users.SearchUser)
 	r.HandleFunc("/api/update", users.UpdateUser)
 
-	log.Fatal(http.ListenAndServe(GetPort(), r))
+	srv := &http.Server{
+		Handler:      r,
+		Addr:         ":8080",
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	// Configure Logging
+	LOG_FILE_LOCATION := os.Getenv("LOG_FILE_LOCATION")
+	if LOG_FILE_LOCATION != "" {
+		fmt.Println(LOG_FILE_LOCATION)
+	}
+
+	// Start Server
+	go func() {
+		log.Println("Starting Server")
+		if err := srv.ListenAndServe(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// Graceful Shutdown
+	waitForShutdown(srv)
 }
 
-func GetPort() string {
-	var port = os.Getenv("PORT")
-	// Set a default port if there is nothing in the environment
-	if port == "" {
-		port = "8080"
-		fmt.Println("INFO: No PORT environment variable detected, defaulting to " + port)
-	}
-	return ":" + port
+func waitForShutdown(srv *http.Server) {
+	interruptChan := make(chan os.Signal, 1)
+	signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	// Block until we receive our signal.
+	<-interruptChan
+
+	// Create a deadline to wait for.
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	srv.Shutdown(ctx)
+
+	log.Println("Shutting down")
+	os.Exit(0)
 }
