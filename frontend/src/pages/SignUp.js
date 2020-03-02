@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 
 import { AuthContext } from '../components/App';
 import { StyledButton } from '../components/Styled/StyledButton';
-import { StyledError, ErrorButton } from './Login';
+import StyledError from '../components/Styled/StyledError';
 
 export const StyledDiv = styled.div`
     display: flex;
@@ -47,6 +47,7 @@ const SignUp = () => {
     const authContext = useContext(AuthContext);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showError, setShowError] = useState(false);
     let history = useHistory();
 
     const signUp = async e => {
@@ -67,6 +68,7 @@ const SignUp = () => {
                 type: 'FETCH_ERROR',
                 payload: 'Something went wrong. Try again!'
             });
+            setShowError(true);
         }
     };
 
@@ -112,23 +114,12 @@ const SignUp = () => {
                         placeholder="password"
                     ></StyledInput>
                     <br />
-                    {authContext.auth.error === '' ? null : (
-                        <StyledError>
-                            <h4 style={{ marginLeft: '60px' }}>
-                                {authContext.auth.error}
-                            </h4>
-                            <ErrorButton
-                                onClick={() =>
-                                    authContext.authDispatch({
-                                        type: 'FETCH_ERROR',
-                                        payload: ''
-                                    })
-                                }
-                            >
-                                X
-                            </ErrorButton>
-                        </StyledError>
-                    )}
+                    {showError ? (
+                        <StyledError
+                            message={authContext.auth.error}
+                            setShowError={setShowError}
+                        />
+                    ) : null}
                     <StyledButton
                         type="submit"
                         value="submit"

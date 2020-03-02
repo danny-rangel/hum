@@ -6,6 +6,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"log"
 	"mime/multipart"
 	"net/http"
@@ -16,6 +19,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/danny-rangel/web/hum/backend/config"
+	"github.com/disintegration/imaging"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
@@ -384,7 +388,7 @@ func Search(r *http.Request, userID string) (User, error) {
 	return user, nil
 }
 
-func Update(r *http.Request, userID string) (User, error) {
+func Update(w http.ResponseWriter, r *http.Request, userID string) (User, error) {
 	avi, handler, err := r.FormFile("avi")
 	username := r.FormValue("username")
 	username = username[1 : len(username)-1]
@@ -403,6 +407,27 @@ func Update(r *http.Request, userID string) (User, error) {
 			panic(errors.New("Error retrieving variables"))
 		}
 
+		defer avi.Close()
+
+		mimeType := handler.Header.Get("Content-Type")
+
+		var dimage image.Image
+
+		switch mimeType {
+		case "image/jpeg":
+			dimage, err = jpeg.Decode(avi)
+		case "image/png":
+			dimage, err = png.Decode(avi)
+		default:
+			return User{}, errors.New("The format of the file is not valid")
+		}
+
+		cropped := imaging.CropCenter(dimage, 400, 400)
+
+		buf := new(bytes.Buffer)
+		err := jpeg.Encode(buf, cropped, nil)
+		sendS3 := buf.Bytes()
+
 		var aviURL string
 
 		s, err := session.NewSession(&aws.Config{
@@ -417,7 +442,7 @@ func Update(r *http.Request, userID string) (User, error) {
 			fmt.Println("Could not create session")
 		}
 
-		fileName, err := UploadFileToS3(s, avi, handler, bucket, userID)
+		fileName, err := UploadFileToS3(s, sendS3, handler, bucket, userID)
 		if err != nil {
 			fmt.Println("Could not upload file")
 		}
@@ -437,7 +462,6 @@ func Update(r *http.Request, userID string) (User, error) {
 		}
 
 		return u, nil
-
 	}
 
 	_, err = config.DB.Exec("UPDATE users SET username = $1 WHERE id = $2", username, userID)
@@ -456,20 +480,15 @@ func Update(r *http.Request, userID string) (User, error) {
 
 }
 
-func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader, bucket string, userID string) (string, error) {
-	size := fileHeader.Size
-	buffer := make([]byte, size)
-	file.Read(buffer)
-
+func UploadFileToS3(s *session.Session, img []byte, fileHeader *multipart.FileHeader, bucket string, userID string) (string, error) {
 	tempFileName := "pictures/" + userID
 
 	_, err := s3.New(s).PutObject(&s3.PutObjectInput{
 		Bucket:               aws.String(bucket),
 		Key:                  aws.String(tempFileName),
 		ACL:                  aws.String("public-read"),
-		Body:                 bytes.NewReader(buffer),
-		ContentLength:        aws.Int64(int64(size)),
-		ContentType:          aws.String(http.DetectContentType(buffer)),
+		Body:                 bytes.NewReader(img),
+		ContentType:          aws.String(http.DetectContentType(img)),
 		ContentDisposition:   aws.String("attachment"),
 		ServerSideEncryption: aws.String("AES256"),
 		StorageClass:         aws.String("INTELLIGENT_TIERING"),

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 
 import { Link } from 'react-router-dom';
-import { ErrorButton } from '../pages/Login';
+import { ErrorButton } from './Styled/StyledError';
 import { AuthContext } from './App';
 import { RedirectContext } from './App';
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
