@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/danny-rangel/web/hum/backend/hums"
 	"github.com/danny-rangel/web/hum/backend/notifications"
@@ -37,5 +39,15 @@ func main() {
 	r.HandleFunc("/api/search", users.SearchUser)
 	r.HandleFunc("/api/update", users.UpdateUser)
 
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(GetPort(), r))
+}
+
+func GetPort() string {
+	var port = os.Getenv("PORT")
+	// Set a default port if there is nothing in the environment
+	if port == "" {
+		port = "8080"
+		fmt.Println("INFO: No PORT environment variable detected, defaulting to " + port)
+	}
+	return ":" + port
 }
