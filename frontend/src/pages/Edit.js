@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
+import { getAPIURL } from '../config/api';
 
 import { RedirectContext } from '../components/App';
 import { AuthContext } from '../components/App';
@@ -27,7 +28,7 @@ const Edit = () => {
     let history = useHistory();
 
     const fetchProfile = useCallback(async () => {
-        const res = await axios.get(`/api/user/${username}`);
+        const res = await axios.get(getAPIURL() + `/api/user/${username}`);
         setUser(res.data);
         setNewUsername(res.data.username);
     }, [username]);
@@ -43,8 +44,13 @@ const Edit = () => {
         }
 
         formData.append('username', JSON.stringify(newUsername));
-        const updateRes = await axios.post('/api/update', formData);
-        const res = await axios.get(`/api/user/${updateRes.data.username}`);
+        const updateRes = await axios.post(
+            getAPIURL() + '/api/update',
+            formData
+        );
+        const res = await axios.get(
+            getAPIURL() + `/api/user/${updateRes.data.username}`
+        );
         authContext.authDispatch({
             type: 'FETCH_SUCCESS',
             payload: res.data

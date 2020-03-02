@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import HumItem from '../components/Hums/HumItem';
 import styled from 'styled-components';
+import { getAPIURL } from '../config/api';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -17,7 +18,7 @@ const ViewHum = () => {
     const [hum, setHum] = useState(null);
 
     const fetchHum = useCallback(async () => {
-        const res = await axios.get(`/api/hum/${humID}`);
+        const res = await axios.get(getAPIURL() + `/api/hum/${humID}`);
         setHum(res.data);
     }, [humID]);
 

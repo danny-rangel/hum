@@ -6,6 +6,7 @@ import { StyledButton } from '../components/Styled/StyledButton';
 import UserList from '../components/Users/UserList';
 import { RedirectContext } from '../components/App';
 import { Redirect } from 'react-router-dom';
+import { getAPIURL } from '../config/api';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -23,7 +24,7 @@ const Search = () => {
 
     const searchUser = async e => {
         e.preventDefault();
-        const res = await axios.post(`/api/search`, {
+        const res = await axios.post(getAPIURL() + `/api/search`, {
             username
         });
         setUser(res.data);

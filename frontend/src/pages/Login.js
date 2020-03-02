@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { getAPIURL } from '../config/api';
 
 import { AuthContext } from '../components/App';
 import { RedirectContext } from '../components/App';
@@ -22,7 +23,7 @@ const Login = () => {
         authContext.auth.loading = true;
         try {
             setIsFetching(true);
-            const res = await axios.post('/api/login', {
+            const res = await axios.post(getAPIURL() + '/api/login', {
                 username: username,
                 password: password
             });

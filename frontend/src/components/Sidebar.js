@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { getAPIURL } from '../config/api';
 
 import { Link } from 'react-router-dom';
 import { ErrorButton } from './Styled/StyledError';
@@ -41,7 +42,7 @@ const Sidebar = ({ show, setShowSidebar }) => {
 
     const logout = async () => {
         try {
-            const res = await axios.get('/api/logout');
+            const res = await axios.get(getAPIURL() + '/api/logout');
             authContext.authDispatch({
                 type: 'FETCH_SUCCESS',
                 payload: res.data

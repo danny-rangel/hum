@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
+import { getAPIURL } from '../config/api';
 
 import { AuthContext } from '../components/App';
 import { StyledButton } from '../components/Styled/StyledButton';
@@ -54,7 +55,7 @@ const SignUp = () => {
         e.preventDefault();
         authContext.auth.loading = true;
         try {
-            const res = await axios.post('/api/signup', {
+            const res = await axios.post(getAPIURL() + '/api/signup', {
                 username: username,
                 password: password
             });

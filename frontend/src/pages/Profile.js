@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { StyledButton } from '../components/Styled/StyledButton';
 import { AuthContext } from '../components/App';
 import Spinner from '../components/Styled/Spinner';
+import { getAPIURL } from '../config/api';
 
 import HumList from '../components/Hums/HumList';
 
@@ -37,9 +38,12 @@ const Profile = () => {
     const fetchProfile = useCallback(
         async source => {
             try {
-                const res = await axios.get(`/api/user/${username}`, {
-                    cancelToken: source.token
-                });
+                const res = await axios.get(
+                    getAPIURL() + `/api/user/${username}`,
+                    {
+                        cancelToken: source.token
+                    }
+                );
                 setUser(res.data);
                 setFollowersCount(res.data.followers);
             } catch (err) {
@@ -53,7 +57,7 @@ const Profile = () => {
         async source => {
             try {
                 const isFollowing = await axios.get(
-                    `/api/isfollowing/${user.id}`,
+                    getAPIURL() + `/api/isfollowing/${user.id}`,
                     {
                         cancelToken: source.token
                     }
@@ -69,9 +73,12 @@ const Profile = () => {
     const fetchHums = useCallback(
         async source => {
             try {
-                const res = await axios.get(`/api/hums/${username}`, {
-                    cancelToken: source.token
-                });
+                const res = await axios.get(
+                    getAPIURL() + `/api/hums/${username}`,
+                    {
+                        cancelToken: source.token
+                    }
+                );
                 setHums(res.data);
             } catch (err) {
                 console.log(err);
@@ -85,7 +92,7 @@ const Profile = () => {
             setFollowersCount(followersCount + 1);
             const source = axios.CancelToken.source();
             setIsFollowing(true);
-            await axios.get(`/api/follow/${username}`, {
+            await axios.get(getAPIURL() + `/api/follow/${username}`, {
                 cancelToken: source.token
             });
             fetchIsFollowing(source);
@@ -100,7 +107,7 @@ const Profile = () => {
             setFollowersCount(followersCount - 1);
             const source = axios.CancelToken.source();
             setIsFollowing(false);
-            await axios.get(`/api/unfollow/${username}`, {
+            await axios.get(getAPIURL() + `/api/unfollow/${username}`, {
                 cancelToken: source.token
             });
             fetchIsFollowing(source);

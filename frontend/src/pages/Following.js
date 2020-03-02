@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { getAPIURL } from '../config/api';
 
 import UserList from '../components/Users/UserList';
 
@@ -9,7 +10,7 @@ const Following = () => {
     const { id } = useParams();
 
     const fetchFollowing = useCallback(async () => {
-        const res = await axios.get(`/api/following/${id}`);
+        const res = await axios.get(getAPIURL() + `/api/following/${id}`);
         setFollowing(res.data);
     }, [id]);
 

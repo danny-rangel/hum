@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { RedirectContext } from '../components/App';
 import styled from 'styled-components';
+import { getAPIURL } from '../config/api';
 
 import Spinner from '../components/Styled/Spinner';
 import NotificationList from '../components/Notifications/NotificationList';
@@ -29,7 +30,7 @@ const Notifications = () => {
 
     const fetchNotifications = async () => {
         try {
-            const res = await axios.get('/api/notifications');
+            const res = await axios.get(getAPIURL() + '/api/notifications');
             setNotifications(res.data);
         } catch (err) {
             console.log(err);

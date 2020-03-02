@@ -5,6 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { RedirectContext } from '../components/App';
 import { StyledButton } from '../components/Styled/StyledButton';
 import Spinner from '../components/Styled/Spinner';
+import { getAPIURL } from '../config/api';
 
 import HumList from '../components/Hums/HumList';
 
@@ -54,7 +55,7 @@ const Home = () => {
 
     const fetchHums = async source => {
         try {
-            const res = await axios.get('/api/hums', {
+            const res = await axios.get(getAPIURL() + '/api/hums', {
                 cancelToken: source.token
             });
             setHums(res.data);
@@ -69,7 +70,7 @@ const Home = () => {
         e.preventDefault();
         try {
             setFetching(true);
-            await axios.post('/api/new/hums', {
+            await axios.post(getAPIURL() + '/api/new/hums', {
                 content
             });
             const source = axios.CancelToken.source();
