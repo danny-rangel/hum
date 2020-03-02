@@ -1,15 +1,10 @@
-# Stage 1
-FROM golang:alpine as builder
-RUN apk update && apk add --no-cache git
-RUN mkdir /build 
-ADD . /build/
-WORKDIR /build
-RUN go get -d -v
-RUN go build -o backend .
-# Stage 2
-FROM alpine
-RUN adduser -S -D -H -h /app appuser
-USER appuser
-COPY --from=builder /build/ /app/
+### Build binary from official Go image
+FROM golang:stretch as build
+COPY . /app
 WORKDIR /app
-CMD ["./backend"]
+RUN go build -o /backend .
+
+### Put the binary onto Heroku image
+FROM heroku/heroku:16
+COPY --from=build /backend /backend
+CMD ["/backend"]
