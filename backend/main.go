@@ -14,6 +14,7 @@ import (
 )
 
 func main() {
+
 	r := mux.NewRouter()
 	r.HandleFunc("/api/login", users.Login)
 	r.HandleFunc("/api/logout", users.Logout)

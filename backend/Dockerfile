@@ -1,31 +1,15 @@
-# Start from the latest golang base image
-FROM golang:latest as builder
-
-LABEL maintainer="Daniel Rangel hello@danielrangel.io"
-
+# Stage 1
+FROM golang:alpine as builder
+RUN apk update && apk add --no-cache git
+RUN mkdir /build 
+ADD . /build/
+WORKDIR /build
+RUN go get -d -v
+RUN go build -o backend .
+# Stage 2
+FROM alpine
+RUN adduser -S -D -H -h /app appuser
+USER appuser
+COPY --from=builder /build/ /app/
 WORKDIR /app
-
-COPY go.mod go.sum ./
-
-RUN go mod download
-
-COPY . .
-
-# Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
-
-
-######## Start a new stage from scratch #######
-FROM alpine:latest  
-
-RUN apk --no-cache add ca-certificates
-
-WORKDIR /root/
-
-# Copy the Pre-built binary file from the previous stage
-COPY --from=builder /app/main .
-
-
-EXPOSE 8080
-
-CMD ["./main"]
+CMD ["./backend"]
