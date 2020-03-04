@@ -74,6 +74,7 @@ const Home = () => {
             await MODAXIOS.post(getAPIURL() + '/api/new/hums', {
                 content
             });
+            setContent('');
             const source = axios.CancelToken.source();
             fetchHums(source);
             setFetching(false);
