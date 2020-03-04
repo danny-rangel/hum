@@ -20,7 +20,7 @@ func init() {
 	}
 
 	host, _ := os.LookupEnv("HOST")
-	port, _ := os.LookupEnv("PORT")
+	port, _ := os.LookupEnv("DBPORT")
 	intPort, _ := strconv.Atoi(port)
 	dbuser, _ := os.LookupEnv("DBUSER")
 	password, _ := os.LookupEnv("PASSWORD")

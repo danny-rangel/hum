@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import { useParams } from 'react-router-dom';
 import HumItem from '../components/Hums/HumItem';
 import styled from 'styled-components';
@@ -18,7 +18,7 @@ const ViewHum = () => {
     const [hum, setHum] = useState(null);
 
     const fetchHum = useCallback(async () => {
-        const res = await axios.get(getAPIURL() + `/api/hum/${humID}`);
+        const res = await MODAXIOS.get(getAPIURL() + `/api/hum/${humID}`);
         setHum(res.data);
     }, [humID]);
 

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import { getAPIURL } from '../config/api';
 
 import { Link } from 'react-router-dom';
@@ -42,7 +42,7 @@ const Sidebar = ({ show, setShowSidebar }) => {
 
     const logout = async () => {
         try {
-            const res = await axios.get(getAPIURL() + '/api/logout');
+            const res = await MODAXIOS.get(getAPIURL() + '/api/logout');
             authContext.authDispatch({
                 type: 'FETCH_SUCCESS',
                 payload: res.data

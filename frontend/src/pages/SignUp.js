@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { getAPIURL } from '../config/api';
@@ -55,7 +55,7 @@ const SignUp = () => {
         e.preventDefault();
         authContext.auth.loading = true;
         try {
-            const res = await axios.post(getAPIURL() + '/api/signup', {
+            const res = await MODAXIOS.post(getAPIURL() + '/api/signup', {
                 username: username,
                 password: password
             });

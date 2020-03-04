@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import axios from 'axios';
 import { getAPIURL } from '../config/api';
+import MODAXIOS from '../config/modaxios';
 
 import Landing from '../pages/Landing';
 import Home from '../pages/Home';
@@ -80,7 +80,7 @@ const App = () => {
 
     const fetchUserInfo = async () => {
         try {
-            const res = await axios.get(getAPIURL() + '/api/user');
+            const res = await MODAXIOS.get(getAPIURL() + '/api/user');
             authDispatch({ type: 'FETCH_SUCCESS', payload: res.data });
         } catch (err) {
             authDispatch({ type: 'FETCH_ERROR' });

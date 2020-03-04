@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import { Redirect } from 'react-router-dom';
 import { RedirectContext } from '../components/App';
 import styled from 'styled-components';
@@ -30,7 +30,7 @@ const Notifications = () => {
 
     const fetchNotifications = async () => {
         try {
-            const res = await axios.get(getAPIURL() + '/api/notifications');
+            const res = await MODAXIOS.get(getAPIURL() + '/api/notifications');
             setNotifications(res.data);
         } catch (err) {
             console.log(err);

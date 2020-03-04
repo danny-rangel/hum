@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import styled from 'styled-components';
 import { Redirect, useParams, useHistory } from 'react-router-dom';
 import { getAPIURL } from '../config/api';
@@ -28,7 +28,7 @@ const Edit = () => {
     let history = useHistory();
 
     const fetchProfile = useCallback(async () => {
-        const res = await axios.get(getAPIURL() + `/api/user/${username}`);
+        const res = await MODAXIOS.get(getAPIURL() + `/api/user/${username}`);
         setUser(res.data);
         setNewUsername(res.data.username);
     }, [username]);
@@ -44,11 +44,11 @@ const Edit = () => {
         }
 
         formData.append('username', JSON.stringify(newUsername));
-        const updateRes = await axios.post(
+        const updateRes = await MODAXIOS.post(
             getAPIURL() + '/api/update',
             formData
         );
-        const res = await axios.get(
+        const res = await MODAXIOS.get(
             getAPIURL() + `/api/user/${updateRes.data.username}`
         );
         authContext.authDispatch({

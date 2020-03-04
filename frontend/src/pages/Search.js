@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { StyledInput } from './SignUp';
-import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import styled from 'styled-components';
 import { StyledButton } from '../components/Styled/StyledButton';
 import UserList from '../components/Users/UserList';
@@ -24,7 +24,7 @@ const Search = () => {
 
     const searchUser = async e => {
         e.preventDefault();
-        const res = await axios.post(getAPIURL() + `/api/search`, {
+        const res = await MODAXIOS.post(getAPIURL() + `/api/search`, {
             username
         });
         setUser(res.data);

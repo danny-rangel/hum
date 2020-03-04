@@ -12,7 +12,7 @@ import (
 )
 
 func FetchUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -27,7 +27,7 @@ func FetchUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func FetchProfile(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -46,7 +46,7 @@ func FetchProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
+	if r.Method != "POST" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -61,7 +61,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
+	if r.Method != "POST" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -84,16 +84,18 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	// Set the client cookie for "session_token" as the session token we just generated
 	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Expires: time.Now().Add(336 * time.Hour),
+		Name:     "session_token",
+		Value:    sessionToken,
+		Expires:  time.Now().Add(336 * time.Hour),
+		SameSite: http.SameSiteNoneMode,
+		Secure:   true,
 	})
 
 	json.NewEncoder(w).Encode(user)
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -143,7 +145,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func FollowUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -166,7 +168,7 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UnfollowUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -189,7 +191,7 @@ func UnfollowUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFollowers(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -204,7 +206,7 @@ func GetFollowers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetFollowing(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -219,7 +221,7 @@ func GetFollowing(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetLikers(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -234,7 +236,7 @@ func GetLikers(w http.ResponseWriter, r *http.Request) {
 }
 
 func CheckIsFollowing(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
+	if r.Method != "GET" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -256,7 +258,7 @@ func CheckIsFollowing(w http.ResponseWriter, r *http.Request) {
 }
 
 func SearchUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
+	if r.Method != "POST" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
@@ -278,7 +280,7 @@ func SearchUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
+	if r.Method != "POST" && r.Method != "OPTIONS" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}

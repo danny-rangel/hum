@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
+import MODAXIOS from '../../config/modaxios';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -37,7 +38,7 @@ const HumItem = ({ hum, fetchHums }) => {
 
     const fetchIsLiked = useCallback(
         async source => {
-            const isLiked = await axios.get(
+            const isLiked = await MODAXIOS.get(
                 getAPIURL() + `/api/isliked/${hum.id}`,
                 {
                     cancelToken: source.token
@@ -50,9 +51,12 @@ const HumItem = ({ hum, fetchHums }) => {
 
     const fetchLikeCount = useCallback(
         async source => {
-            const res = await axios.get(getAPIURL() + `/api/likes/${hum.id}`, {
-                cancelToken: source.token
-            });
+            const res = await MODAXIOS.get(
+                getAPIURL() + `/api/likes/${hum.id}`,
+                {
+                    cancelToken: source.token
+                }
+            );
             setLikes(res.data);
         },
         [hum]
@@ -72,7 +76,7 @@ const HumItem = ({ hum, fetchHums }) => {
             const source = axios.CancelToken.source();
             setIsLiked(true);
             setLikes(likes + 1);
-            await axios.post(getAPIURL() + '/api/like', {
+            await MODAXIOS.post(getAPIURL() + '/api/like', {
                 id: hum.id
             });
             fetchIsLiked(source);
@@ -87,7 +91,7 @@ const HumItem = ({ hum, fetchHums }) => {
             const source = axios.CancelToken.source();
             setIsLiked(false);
             setLikes(likes - 1);
-            await axios.post(getAPIURL() + '/api/unlike', {
+            await MODAXIOS.post(getAPIURL() + '/api/unlike', {
                 id: hum.id
             });
             fetchIsLiked(source);
@@ -100,7 +104,7 @@ const HumItem = ({ hum, fetchHums }) => {
     const deleteHum = async () => {
         try {
             const source = axios.CancelToken.source();
-            await axios.delete(getAPIURL() + `/api/delete/hums/${hum.id}`, {
+            await MODAXIOS.delete(getAPIURL() + `/api/delete/hums/${hum.id}`, {
                 cancelToken: source.token
             });
             fetchHums(source);

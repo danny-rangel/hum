@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import { useHistory } from 'react-router-dom';
 import { getAPIURL } from '../config/api';
 
@@ -23,7 +23,7 @@ const Login = () => {
         authContext.auth.loading = true;
         try {
             setIsFetching(true);
-            const res = await axios.post(getAPIURL() + '/api/login', {
+            const res = await MODAXIOS.post(getAPIURL() + '/api/login', {
                 username: username,
                 password: password
             });

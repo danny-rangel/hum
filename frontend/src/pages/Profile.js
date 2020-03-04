@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { StyledButton } from '../components/Styled/StyledButton';
@@ -38,7 +39,7 @@ const Profile = () => {
     const fetchProfile = useCallback(
         async source => {
             try {
-                const res = await axios.get(
+                const res = await MODAXIOS.get(
                     getAPIURL() + `/api/user/${username}`,
                     {
                         cancelToken: source.token
@@ -56,7 +57,7 @@ const Profile = () => {
     const fetchIsFollowing = useCallback(
         async source => {
             try {
-                const isFollowing = await axios.get(
+                const isFollowing = await MODAXIOS.get(
                     getAPIURL() + `/api/isfollowing/${user.id}`,
                     {
                         cancelToken: source.token
@@ -73,7 +74,7 @@ const Profile = () => {
     const fetchHums = useCallback(
         async source => {
             try {
-                const res = await axios.get(
+                const res = await MODAXIOS.get(
                     getAPIURL() + `/api/hums/${username}`,
                     {
                         cancelToken: source.token
@@ -92,7 +93,7 @@ const Profile = () => {
             setFollowersCount(followersCount + 1);
             const source = axios.CancelToken.source();
             setIsFollowing(true);
-            await axios.get(getAPIURL() + `/api/follow/${username}`, {
+            await MODAXIOS.get(getAPIURL() + `/api/follow/${username}`, {
                 cancelToken: source.token
             });
             fetchIsFollowing(source);
@@ -107,7 +108,7 @@ const Profile = () => {
             setFollowersCount(followersCount - 1);
             const source = axios.CancelToken.source();
             setIsFollowing(false);
-            await axios.get(getAPIURL() + `/api/unfollow/${username}`, {
+            await MODAXIOS.get(getAPIURL() + `/api/unfollow/${username}`, {
                 cancelToken: source.token
             });
             fetchIsFollowing(source);

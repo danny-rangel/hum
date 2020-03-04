@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import MODAXIOS from '../config/modaxios';
 import styled from 'styled-components';
 import { Redirect } from 'react-router-dom';
 import { RedirectContext } from '../components/App';
@@ -55,7 +56,7 @@ const Home = () => {
 
     const fetchHums = async source => {
         try {
-            const res = await axios.get(getAPIURL() + '/api/hums', {
+            const res = await MODAXIOS.get(getAPIURL() + '/api/hums', {
                 cancelToken: source.token
             });
             setHums(res.data);
@@ -70,7 +71,7 @@ const Home = () => {
         e.preventDefault();
         try {
             setFetching(true);
-            await axios.post(getAPIURL() + '/api/new/hums', {
+            await MODAXIOS.post(getAPIURL() + '/api/new/hums', {
                 content
             });
             const source = axios.CancelToken.source();

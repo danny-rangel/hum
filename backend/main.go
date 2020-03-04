@@ -1,21 +1,17 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/signal"
-	"syscall"
-	"time"
 
 	"github.com/danny-rangel/web/hum/backend/hums"
 	"github.com/danny-rangel/web/hum/backend/notifications"
 	"github.com/danny-rangel/web/hum/backend/users"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/rs/cors"
 )
 
 func main() {
@@ -45,55 +41,7 @@ func main() {
 	r.HandleFunc("/api/search", users.SearchUser)
 	r.HandleFunc("/api/update", users.UpdateUser)
 
-	handler := cors.Default().Handler(r)
+	fmt.Println("Listening on port ", os.Getenv("PORT"))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("PORT"), handlers.CORS(handlers.AllowCredentials(), handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"https://hum-frontend.herokuapp.com"}))(r)))
 
-	// portString := os.Getenv("PORT")
-
-	// var port string
-
-	// if portString == "" {
-	// 	port = ":8080"
-	// } else {
-	// 	port = ":" + portString
-	// }
-
-	srv := &http.Server{
-		Handler:      handler,
-		Addr:         ":8080",
-		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	}
-
-	// Configure Logging
-	LOG_FILE_LOCATION := os.Getenv("LOG_FILE_LOCATION")
-	if LOG_FILE_LOCATION != "" {
-		fmt.Println(LOG_FILE_LOCATION)
-	}
-
-	// Start Server
-	go func() {
-		log.Println("Starting Server")
-		if err := srv.ListenAndServe(); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
-	// Graceful Shutdown
-	waitForShutdown(srv)
-}
-
-func waitForShutdown(srv *http.Server) {
-	interruptChan := make(chan os.Signal, 1)
-	signal.Notify(interruptChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-
-	// Block until we receive our signal.
-	<-interruptChan
-
-	// Create a deadline to wait for.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
-	srv.Shutdown(ctx)
-
-	log.Println("Shutting down")
-	os.Exit(0)
 }
