@@ -15,6 +15,7 @@ import (
 	"github.com/danny-rangel/web/hum/backend/users"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 func main() {
@@ -44,8 +45,20 @@ func main() {
 	r.HandleFunc("/api/search", users.SearchUser)
 	r.HandleFunc("/api/update", users.UpdateUser)
 
+	handler := cors.Default().Handler(r)
+
+	// portString := os.Getenv("PORT")
+
+	// var port string
+
+	// if portString == "" {
+	// 	port = ":8080"
+	// } else {
+	// 	port = ":" + portString
+	// }
+
 	srv := &http.Server{
-		Handler:      r,
+		Handler:      handler,
 		Addr:         ":8080",
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,

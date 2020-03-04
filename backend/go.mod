@@ -16,6 +16,7 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/lib/pq v1.3.0
 	github.com/oliamb/cutter v0.2.2
+	github.com/rs/cors v1.7.0
 	github.com/tools/godep v0.0.0-20180126220526-ce0bfadeb516 // indirect
 	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1 // indirect
