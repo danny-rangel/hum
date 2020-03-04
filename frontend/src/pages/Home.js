@@ -75,6 +75,7 @@ const Home = () => {
                 content
             });
             setContent('');
+            setCharCount(50);
             const source = axios.CancelToken.source();
             fetchHums(source);
             setFetching(false);
@@ -104,6 +105,7 @@ const Home = () => {
                         maxlength="50"
                         rows="2"
                         placeholder="what's up?"
+                        value={content}
                         onChange={e => updateContent(e)}
                     ></StyledTextArea>
                     <span
