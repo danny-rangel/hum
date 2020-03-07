@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css?family=Khula|Roboto&display=swap');
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+}
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+}
+
+.App {
+    display: grid;
+    grid-template-rows: 60px 1fr;
+    background: rgb(245, 245, 245);
+    background: linear-gradient(
+        315deg,
+        rgba(245, 245, 245, 1) 27%,
+        rgba(249, 200, 200, 1) 78%
+    );
+    min-height: 100vh;
+    color: rgb(0, 0, 0);
+    font-family: 'Roboto';
+}
+
+h1 {
+    font-family: 'Khula';
+    letter-spacing: -2px;
+    font-weight: 100;
+    color: white;
+    text-shadow: 2px 2px 4px rgb(156, 137, 137);
+    margin: 0;
+}
+
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Khula';
+    letter-spacing: -2px;
+    font-weight: 100;
+    color: #2f2f2f;
+    margin: 0;
+    /* font-size: 1.5em; */
+}
+
+a {
+    text-decoration: none;
+    color: #2f2f2f;
+}
+
+.line-under:after {
+    content: '';
+    display: block;
+    width: 0%;
+    height: 2px;
+    background-color: #70b5db;
+    transition: width 0.8s;
+}
+
+.line-under:hover::after {
+    width: 100%;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.wrapper {
+    height: 100%;
+    margin: auto;
+    /* display: flex; */
+    /* justify-content: center; */
+    /* align-items: center; */
+    width: 95%;
+    max-width: 800px;
+}
+
+.login-button {
+    margin-right: 40px;
+}
+
+[type='file'] {
+    border: 0;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute !important;
+    white-space: nowrap;
+    width: 1px;
+}
+
+[type='file'] + label {
+    background: transparent;
+    border-radius: 0px;
+    border: 1px solid palevioletred;
+    color: palevioletred;
+    cursor: pointer;
+    transition: all 0.3s ease 0s;
+    padding: 12px 40px;
+    font-size: 1em;
+    margin: 20px;
+}
+
+[type='file']:focus + label,
+[type='file'] + label:hover {
+    background-color: palevioletred;
+    color: white;
+}
+
+[type='file']:focus + label {
+    outline: 1px dotted #000;
+}
+
+@media only screen and (max-width: 600px) {
+    h2,
+    h4 {
+        font-size: 1.2em;
+        letter-spacing: 0px;
+    }
+
+    .login-button {
+        margin-right: 15px;
+    }
+}
