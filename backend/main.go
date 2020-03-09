@@ -13,8 +13,12 @@ import (
 func main() {
 
 	r := router.Router()
-	fs := http.FileServer(http.Dir("./build"))
-	http.Handle("/", fs)
+
+	buildHandler := http.FileServer(http.Dir("./client"))
+	r.PathPrefix("/").Handler(buildHandler)
+
+	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("./client/static>")))
+	r.PathPrefix("/static/").Handler(staticHandler)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -24,5 +28,5 @@ func main() {
 	}
 
 	fmt.Println("Listening on port ", port)
-	log.Fatal(http.ListenAndServe(port, handlers.CORS(handlers.AllowCredentials(), handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE"}), handlers.AllowedOrigins([]string{"https://hum-frontend.herokuapp.com"}))(r)))
+	log.Fatal(http.ListenAndServe(port, handlers.CORS(handlers.AllowCredentials(), handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE"}), handlers.AllowedOrigins([]string{"http://humapp.xyz"}))(r)))
 }

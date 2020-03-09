@@ -13,7 +13,7 @@ services:
         restart: always
         environment: # Pass environment variables to the service
             - HOST=${HOST}
-            - PORT=${PORT}
+            - DBPORT=${DBPORT}
             - DBUSER=${DBUSER}
             - PASSWORD=${PASSWORD}
             - DBNAME=${DBNAME}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import { getAPIURL } from '../config/api';
 import MODAXIOS from '../config/modaxios';
 
@@ -110,7 +110,7 @@ const App: React.FC<Props> = () => {
     }, [auth]);
 
     return (
-        <Router>
+        <Router basename="/">
             <RedirectContext.Provider
                 value={{
                     redirect,
