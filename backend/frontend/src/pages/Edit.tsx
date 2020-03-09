@@ -21,9 +21,17 @@ const StyledDiv = styled.div`
 const Edit = () => {
     const redirectContext = useContext(RedirectContext);
     const authContext = useContext(AuthContext);
-    const [user, setUser] = useState(null);
-    const [newUsername, setNewUsername] = useState(null);
-    const [newImage, setNewImage] = useState(null);
+    const [user, setUser] = useState({
+        id: '',
+        username: '',
+        numposts: 0,
+        avi: 'https://hum.s3-us-west-1.amazonaws.com/default.png',
+        followers: 0,
+        following: 0,
+        joined: new Date()
+    });
+    const [newUsername, setNewUsername] = useState<string | null>(null);
+    const [newImage, setNewImage] = useState<File | null>(null);
     const { username } = useParams();
     let history = useHistory();
 
@@ -80,7 +88,7 @@ const Edit = () => {
                             marginTop: '30px'
                         }}
                     >
-                        <StyledAVI src={user ? user.avi : null}></StyledAVI>
+                        {user ? <StyledAVI src={user.avi}></StyledAVI> : null}
                         <input
                             type="file"
                             name="avi"

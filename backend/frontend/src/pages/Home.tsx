@@ -42,12 +42,20 @@ const StyledTextArea = styled.textarea`
     box-sizing: border-box;
 `;
 
+interface Hums {
+    id: String;
+    likes: Number;
+    posted: Date;
+    user_id: String;
+    username: String;
+}
+
 const Home = () => {
-    const [hums, setHums] = useState(null);
-    const [content, setContent] = useState('');
-    const [charCount, setCharCount] = useState(50);
+    const [hums, setHums] = useState<Hums[] | null>(null);
+    const [content, setContent] = useState<String>('');
+    const [charCount, setCharCount] = useState<Number>(50);
+    const [fetching, setFetching] = useState<Boolean>(false);
     const redirectContext = useContext(RedirectContext);
-    const [fetching, setFetching] = useState(false);
 
     const updateContent = e => {
         setContent(e.target.value);

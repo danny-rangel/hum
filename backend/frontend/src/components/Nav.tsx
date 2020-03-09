@@ -7,6 +7,7 @@ import { ReactComponent as HumIcon } from '../icons/hum.svg';
 import { AuthContext } from './App';
 import { StyledButton } from './Styled/StyledButton';
 import media from './Styled/media';
+import './Nav.css';
 
 const StyledHeader = styled.header`
     width: 100%;
@@ -15,9 +16,9 @@ const StyledHeader = styled.header`
     align-items: center;
     justify-content: flex-end;
 
-    ${media.medium`
+    @media (max-width: 600px) {
         justify-content: space-evenly;
-    `}
+    }
 `;
 
 const HumLink = styled(Link)`
@@ -25,26 +26,26 @@ const HumLink = styled(Link)`
     margin-left: 40px;
     border-radius: 50%;
 
-    ${media.medium`
+    @media (max-width: 600px) {
         margin-left: 20px;
-    `}
+    }
 `;
 
 const StyledUL = styled.ul`
     display: flex;
     align-items: center;
-    ${media.medium`
+    @media (max-width: 600px) {
         justify-content: space-around;
-    `}
+    }
 `;
 
 const StyledLi = styled.li`
     display: inline-block;
     margin-right: 40px;
 
-    ${media.medium`
+    @media (max-width: 600px) {
         margin-right: 25px;
-    `}
+    }
 `;
 
 const StyledLink = styled(Link)`
@@ -62,7 +63,11 @@ const StyledAVI = styled.img`
         rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
 `;
 
-const Nav = ({ setShowSidebar }) => {
+interface Props {
+    setShowSidebar: Function;
+}
+
+const Nav: React.FC<Props> = ({ setShowSidebar }) => {
     const authContext = useContext(AuthContext);
 
     return (

@@ -9,7 +9,11 @@ import { AuthContext } from './App';
 import { RedirectContext } from './App';
 import { ReactComponent as CloseIcon } from '../icons/close.svg';
 
-const StyledSidebar = styled.div`
+interface StyledSidebarProps {
+    show?: boolean;
+}
+
+const StyledSidebar = styled.div<StyledSidebarProps>`
     position: absolute;
     width: 200px;
     left: ${props => (props.show ? 0 : '-200px')};

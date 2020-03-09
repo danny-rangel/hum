@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import MODAXIOS from '../config/modaxios';
+import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { getAPIURL } from '../config/api';
 
@@ -8,6 +9,15 @@ import { RedirectContext } from '../components/App';
 import { StyledDiv, StyledForm, StyledInput } from './SignUp';
 import { StyledButton } from '../components/Styled/StyledButton';
 import StyledError from '../components/Styled/StyledError';
+
+const StyledH2 = styled.h2`
+    color: rgb(134, 134, 134);
+    font-family: Khula;
+    letter-spacing: -2px;
+    font-weight: 100;
+    font-size: 2em;
+    margin: 10px 0 0;
+`;
 
 const Login = () => {
     const authContext = useContext(AuthContext);
@@ -49,18 +59,7 @@ const Login = () => {
         <div className="wrapper">
             <StyledDiv>
                 <StyledForm method="post">
-                    <h2
-                        style={{
-                            color: 'rgb(134, 134, 134)',
-                            fontFamily: 'Khula',
-                            letterSpacing: '-2px',
-                            fontWeight: '100',
-                            fontSize: '2em',
-                            margin: '10px 0 0'
-                        }}
-                    >
-                        log in
-                    </h2>
+                    <StyledH2>log in</StyledH2>
                     <div
                         style={{
                             width: '100%',

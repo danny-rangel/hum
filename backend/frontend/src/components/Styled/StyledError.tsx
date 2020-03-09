@@ -43,19 +43,17 @@ export const ErrorButton = styled.button`
     font-family: Khula;
 `;
 
+const StyledH3 = styled.h3`
+    margin: auto;
+    color: #ffffff;
+    letter-spacing: 0px;
+    font-weight: 600;
+`;
+
 const StyledError = ({ message, setShowError }) => {
     return (
         <StyledErrorMessage>
-            <h3
-                style={{
-                    margin: 'auto',
-                    color: '#ffffff',
-                    letterSpacing: '0px',
-                    fontWeight: '600'
-                }}
-            >
-                {message}
-            </h3>
+            <StyledH3>{message}</StyledH3>
             <ErrorButton
                 onClick={() => setShowError(false)}
                 style={{

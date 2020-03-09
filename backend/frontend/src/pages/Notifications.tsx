@@ -25,7 +25,7 @@ const StyledDiv = styled.div`
 `;
 
 const Notifications = () => {
-    const [notifications, setNotifications] = useState(null);
+    const [notifications, setNotifications] = useState<[] | null>(null);
     const redirectContext = useContext(RedirectContext);
 
     const fetchNotifications = async () => {

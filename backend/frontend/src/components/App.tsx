@@ -19,9 +19,6 @@ import Edit from '../pages/Edit';
 import ViewHum from '../pages/ViewHum';
 import Search from '../pages/Search';
 
-export const AuthContext = React.createContext(null);
-export const RedirectContext = React.createContext(null);
-
 const authInitialState = {
     loading: false,
     error: '',
@@ -31,6 +28,19 @@ const authInitialState = {
 const redirectInitialState = {
     toLanding: true
 };
+
+interface AuthContextProps {
+    auth: any;
+    authDispatch: React.Dispatch<any>;
+}
+
+interface RedirectContextProps {
+    redirect: any;
+    redirectDispatch: React.Dispatch<any>;
+}
+
+export const AuthContext = React.createContext({} as AuthContextProps);
+export const RedirectContext = React.createContext({} as RedirectContextProps);
 
 const authReducer = (state, action) => {
     switch (action.type) {
@@ -66,7 +76,9 @@ const redirectReducer = (state, action) => {
     }
 };
 
-const App = () => {
+interface Props {}
+
+const App: React.FC<Props> = () => {
     const [show, setShow] = useState(false);
     const [auth, authDispatch] = useReducer(authReducer, authInitialState);
     const [redirect, redirectDispatch] = useReducer(

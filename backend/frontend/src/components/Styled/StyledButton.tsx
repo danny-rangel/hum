@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 
-export const StyledButton = styled.button`
+interface StyledButtonProps {
+    padding?: string;
+    fontSize?: string;
+    margin?: string;
+}
+
+export const StyledButton = styled.button<StyledButtonProps>`
     background: transparent;
     border-radius: 0px;
     border: 1px solid palevioletred;

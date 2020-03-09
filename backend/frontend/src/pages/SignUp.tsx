@@ -44,6 +44,15 @@ export const StyledInput = styled.input`
     padding: 5px 10px;
 `;
 
+const StyledH2 = styled.h2`
+    color: rgb(134, 134, 134);
+    font-family: Khula;
+    letter-spacing: -2px;
+    font-weight: 100;
+    font-size: 2em;
+    margin: 10px 0 0;
+`;
+
 const SignUp = () => {
     const authContext = useContext(AuthContext);
     const [username, setUsername] = useState('');
@@ -77,18 +86,7 @@ const SignUp = () => {
         <div className="wrapper">
             <StyledDiv>
                 <StyledForm method="post">
-                    <h2
-                        style={{
-                            color: 'rgb(134, 134, 134)',
-                            fontFamily: 'Khula',
-                            letterSpacing: '-2px',
-                            fontWeight: '100',
-                            fontSize: '2em',
-                            margin: '10px 0 0'
-                        }}
-                    >
-                        sign up
-                    </h2>
+                    <StyledH2>sign up</StyledH2>
                     <div
                         style={{
                             width: '100%',

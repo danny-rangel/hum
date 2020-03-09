@@ -31,9 +31,14 @@ const StyledDiv = styled.div`
     word-wrap: break-word;
 `;
 
-const HumItem = ({ hum, fetchHums }) => {
-    const [isLiked, setIsLiked] = useState(null);
-    const [likes, setLikes] = useState(0);
+interface HumItemProps {
+    hum: any;
+    fetchHums?: Function;
+}
+
+const HumItem = ({ hum, fetchHums }: HumItemProps) => {
+    const [isLiked, setIsLiked] = useState<boolean | null>(null);
+    const [likes, setLikes] = useState<number>(0);
     const authContext = useContext(AuthContext);
 
     const fetchIsLiked = useCallback(
@@ -107,7 +112,9 @@ const HumItem = ({ hum, fetchHums }) => {
             await MODAXIOS.delete(getAPIURL() + `/api/delete/hums/${hum.id}`, {
                 cancelToken: source.token
             });
-            fetchHums(source);
+            if (fetchHums) {
+                fetchHums(source);
+            }
         } catch (err) {
             console.log(err);
         }

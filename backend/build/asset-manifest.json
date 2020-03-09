@@ -1,0 +1,29 @@
+{
+  "files": {
+    "main.css": "/static/css/main.38e107b3.chunk.css",
+    "main.js": "/static/js/main.71d1510e.chunk.js",
+    "main.js.map": "/static/js/main.71d1510e.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.18445cb3.js",
+    "runtime-main.js.map": "/static/js/runtime-main.18445cb3.js.map",
+    "static/js/2.3d5c0152.chunk.js": "/static/js/2.3d5c0152.chunk.js",
+    "static/js/2.3d5c0152.chunk.js.map": "/static/js/2.3d5c0152.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.5b2d669bea58ffad755c607e423aff42.js": "/precache-manifest.5b2d669bea58ffad755c607e423aff42.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.38e107b3.chunk.css.map": "/static/css/main.38e107b3.chunk.css.map",
+    "static/js/2.3d5c0152.chunk.js.LICENSE.txt": "/static/js/2.3d5c0152.chunk.js.LICENSE.txt",
+    "static/media/bell.a079272c.svg": "/static/media/bell.a079272c.svg",
+    "static/media/close.e523dcff.svg": "/static/media/close.e523dcff.svg",
+    "static/media/filledheart.10d8f403.svg": "/static/media/filledheart.10d8f403.svg",
+    "static/media/garbage.0142a2f9.svg": "/static/media/garbage.0142a2f9.svg",
+    "static/media/heart.0ed78490.svg": "/static/media/heart.0ed78490.svg",
+    "static/media/hum.b0a3a0fa.svg": "/static/media/hum.b0a3a0fa.svg",
+    "static/media/search.d3cafb4f.svg": "/static/media/search.d3cafb4f.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.18445cb3.js",
+    "static/js/2.3d5c0152.chunk.js",
+    "static/css/main.38e107b3.chunk.css",
+    "static/js/main.71d1510e.chunk.js"
+  ]
+}

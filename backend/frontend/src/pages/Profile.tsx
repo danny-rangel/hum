@@ -28,12 +28,30 @@ export const StyledAVI = styled.img`
         rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
 `;
 
+interface User {
+    id: string;
+    username: string;
+    numposts: number;
+    avi: string;
+    followers: number;
+    following: number;
+    joined: Date;
+}
+
 const Profile = () => {
     const authContext = useContext(AuthContext);
-    const [hums, setHums] = useState(null);
-    const [user, setUser] = useState(null);
-    const [isFollowing, setIsFollowing] = useState(null);
-    const [followersCount, setFollowersCount] = useState(null);
+    const [hums, setHums] = useState<[] | null>(null);
+    const [user, setUser] = useState<User>({
+        id: '',
+        username: '',
+        numposts: 0,
+        avi: '',
+        followers: 0,
+        following: 0,
+        joined: new Date()
+    });
+    const [isFollowing, setIsFollowing] = useState<boolean | null>(null);
+    const [followersCount, setFollowersCount] = useState<number>(0);
     const { username } = useParams();
 
     const fetchProfile = useCallback(

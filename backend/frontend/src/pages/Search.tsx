@@ -17,9 +17,19 @@ const StyledDiv = styled.div`
     width: 100%;
 `;
 
+interface User {
+    id: string;
+    username: string;
+    numposts: number;
+    avi: string;
+    followers: number;
+    following: number;
+    joined: Date;
+}
+
 const Search = () => {
     const [username, setUsername] = useState('');
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
     const redirectContext = useContext(RedirectContext);
 
     const searchUser = async e => {
