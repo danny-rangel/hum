@@ -6,8 +6,6 @@ import { ReactComponent as SearchIcon } from '../icons/search.svg';
 import { ReactComponent as HumIcon } from '../icons/hum.svg';
 import { AuthContext } from './App';
 import { StyledButton } from './Styled/StyledButton';
-import media from './Styled/media';
-import './Nav.css';
 
 const StyledHeader = styled.header`
     width: 100%;

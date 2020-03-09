@@ -52,9 +52,9 @@ interface Hums {
 
 const Home = () => {
     const [hums, setHums] = useState<Hums[] | null>(null);
-    const [content, setContent] = useState<String>('');
-    const [charCount, setCharCount] = useState<Number>(50);
-    const [fetching, setFetching] = useState<Boolean>(false);
+    const [content, setContent] = useState<string>('');
+    const [charCount, setCharCount] = useState<number>(50);
+    const [fetching, setFetching] = useState<boolean>(false);
     const redirectContext = useContext(RedirectContext);
 
     const updateContent = e => {
@@ -110,8 +110,7 @@ const Home = () => {
                 <StyledForm method="post">
                     <StyledTextArea
                         name="content"
-                        maxlength="50"
-                        rows="2"
+                        rows={2}
                         placeholder="what's up?"
                         value={content}
                         onChange={e => updateContent(e)}
@@ -136,7 +135,7 @@ const Home = () => {
                         <h2
                             style={{
                                 marginRight: '1px',
-                                color: charCount < 0 ? 'red' : null
+                                color: charCount < 0 ? 'red' : undefined
                             }}
                         >
                             {charCount}
