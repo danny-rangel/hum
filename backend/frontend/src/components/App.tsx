@@ -61,7 +61,10 @@ const authReducer = (state, action) => {
     }
 };
 
-const redirectReducer = (state, action) => {
+const redirectReducer = (
+    state: { toLanding: boolean },
+    action: { type: string }
+) => {
     switch (action.type) {
         case 'AUTH_TRUE':
             return {
@@ -79,14 +82,14 @@ const redirectReducer = (state, action) => {
 interface Props {}
 
 const App: React.FC<Props> = () => {
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState<boolean>(false);
     const [auth, authDispatch] = useReducer(authReducer, authInitialState);
     const [redirect, redirectDispatch] = useReducer(
         redirectReducer,
         redirectInitialState
     );
 
-    const setShowSidebar = result => {
+    const setShowSidebar = (result: boolean) => {
         setShow(result);
     };
 

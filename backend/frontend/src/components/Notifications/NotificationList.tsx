@@ -1,8 +1,24 @@
 import React from 'react';
 import NotificationItem from './NotificationItem';
 
-const NotificationList = ({ notifications }) => {
-    const renderNotifications = () => {
+export interface Notification {
+    id: string;
+    kind: string;
+    from_id: number;
+    to_id: number;
+    from_username: string;
+    link: string;
+    created: Date;
+}
+
+interface NotificationListProps {
+    notifications: Notification[];
+}
+
+const NotificationList: React.FC<NotificationListProps> = ({
+    notifications
+}) => {
+    const renderNotifications = (): JSX.Element[] => {
         return notifications.map(notification => {
             return (
                 <NotificationItem

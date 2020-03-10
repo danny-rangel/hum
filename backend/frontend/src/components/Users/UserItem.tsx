@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { User } from './UserList';
 
 const StyledUserItem = styled.div`
     padding: 10px 0;
@@ -22,7 +23,11 @@ const StyledAVI = styled.img`
         rgba(0, 0, 0, 0.12) 0px 1px 10px 0px;
 `;
 
-const UserItem = ({ user }) => {
+interface UserItemProps {
+    user: User;
+}
+
+const UserItem: React.FC<UserItemProps> = ({ user }) => {
     return (
         <StyledUserItem>
             <StyledAVI src={user.avi}></StyledAVI>

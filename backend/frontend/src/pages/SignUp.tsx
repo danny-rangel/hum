@@ -53,14 +53,14 @@ const StyledH2 = styled.h2`
     margin: 10px 0 0;
 `;
 
-const SignUp = () => {
+const SignUp: React.FC = () => {
     const authContext = useContext(AuthContext);
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [showError, setShowError] = useState(false);
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [showError, setShowError] = useState<boolean>(false);
     let history = useHistory();
 
-    const signUp = async e => {
+    const signUp = async (e): Promise<any> => {
         e.preventDefault();
         authContext.auth.loading = true;
         try {

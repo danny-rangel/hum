@@ -19,16 +19,16 @@ const StyledH2 = styled.h2`
     margin: 10px 0 0;
 `;
 
-const Login = () => {
+const Login: React.FC = () => {
     const authContext = useContext(AuthContext);
     const redirectContext = useContext(RedirectContext);
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [showError, setShowError] = useState(false);
-    const [isFetching, setIsFetching] = useState(false);
+    const [username, setUsername] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [showError, setShowError] = useState<boolean>(false);
+    const [isFetching, setIsFetching] = useState<boolean>(false);
     let history = useHistory();
 
-    const fetchUser = async e => {
+    const fetchUser = async (e): Promise<any> => {
         e.preventDefault();
         authContext.auth.loading = true;
         try {

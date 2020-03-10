@@ -10,6 +10,7 @@ import { AuthContext } from '../App';
 import { ReactComponent as UnlikedIcon } from '../../icons/heart.svg';
 import { ReactComponent as LikedIcon } from '../../icons/filledheart.svg';
 import { ReactComponent as TrashIcon } from '../../icons/garbage.svg';
+import { Hum } from './HumList';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -32,17 +33,17 @@ const StyledDiv = styled.div`
 `;
 
 interface HumItemProps {
-    hum: any;
+    hum: Hum;
     fetchHums?: Function;
 }
 
-const HumItem = ({ hum, fetchHums }: HumItemProps) => {
+const HumItem: React.FC<HumItemProps> = ({ hum, fetchHums }) => {
     const [isLiked, setIsLiked] = useState<boolean | null>(null);
     const [likes, setLikes] = useState<number>(0);
     const authContext = useContext(AuthContext);
 
     const fetchIsLiked = useCallback(
-        async source => {
+        async (source): Promise<any> => {
             const isLiked = await MODAXIOS.get(
                 getAPIURL() + `/api/isliked/${hum.id}`,
                 {
@@ -55,7 +56,7 @@ const HumItem = ({ hum, fetchHums }: HumItemProps) => {
     );
 
     const fetchLikeCount = useCallback(
-        async source => {
+        async (source): Promise<any> => {
             const res = await MODAXIOS.get(
                 getAPIURL() + `/api/likes/${hum.id}`,
                 {
@@ -76,7 +77,7 @@ const HumItem = ({ hum, fetchHums }: HumItemProps) => {
         };
     }, [fetchIsLiked, fetchLikeCount]);
 
-    const likeHum = async () => {
+    const likeHum = async (): Promise<any> => {
         try {
             const source = axios.CancelToken.source();
             setIsLiked(true);
@@ -91,7 +92,7 @@ const HumItem = ({ hum, fetchHums }: HumItemProps) => {
         }
     };
 
-    const unlikeHum = async () => {
+    const unlikeHum = async (): Promise<any> => {
         try {
             const source = axios.CancelToken.source();
             setIsLiked(false);
@@ -106,7 +107,7 @@ const HumItem = ({ hum, fetchHums }: HumItemProps) => {
         }
     };
 
-    const deleteHum = async () => {
+    const deleteHum = async (): Promise<any> => {
         try {
             const source = axios.CancelToken.source();
             await MODAXIOS.delete(getAPIURL() + `/api/delete/hums/${hum.id}`, {

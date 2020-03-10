@@ -4,9 +4,10 @@ import { useParams } from 'react-router-dom';
 import { getAPIURL } from '../config/api';
 
 import UserList from '../components/Users/UserList';
+import { User } from '../components/Users/UserList';
 
-const Following = () => {
-    const [following, setFollowing] = useState(null);
+const Following: React.FC = () => {
+    const [following, setFollowing] = useState<User[] | null>(null);
     const { id } = useParams();
 
     const fetchFollowing = useCallback(async () => {
@@ -21,7 +22,7 @@ const Following = () => {
     return (
         <div className="wrapper">
             <h1 style={{ textAlign: 'center' }}>following</h1>
-            <UserList users={following} />
+            <UserList users={following!} />
         </div>
     );
 };

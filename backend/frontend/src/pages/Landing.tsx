@@ -12,7 +12,7 @@ const StyledDiv = styled.div`
     align-items: center;
 `;
 
-const Landing = () => {
+const Landing: React.FC = () => {
     const redirectContext = useContext(RedirectContext);
 
     return (

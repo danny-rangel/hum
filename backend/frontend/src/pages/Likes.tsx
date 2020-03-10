@@ -5,11 +5,21 @@ import { getAPIURL } from '../config/api';
 
 import UserList from '../components/Users/UserList';
 
-const Likes = () => {
-    const [likes, setLikes] = useState(null);
+interface Like {
+    id: string;
+    username: string;
+    numposts: number;
+    avi: string;
+    followers: number;
+    following: number;
+    joined: Date;
+}
+
+const Likes: React.FC = () => {
+    const [likes, setLikes] = useState<Like[] | null>(null);
     const { humID } = useParams();
 
-    const fetchLikes = useCallback(async () => {
+    const fetchLikes = useCallback(async (): Promise<any> => {
         const res = await MODAXIOS.get(getAPIURL() + `/api/likers/${humID}`);
         setLikes(res.data);
     }, [humID]);
@@ -21,7 +31,7 @@ const Likes = () => {
     return (
         <div className="wrapper">
             <h1 style={{ textAlign: 'center' }}>likes</h1>
-            <UserList users={likes} />
+            <UserList users={likes!} />
         </div>
     );
 };

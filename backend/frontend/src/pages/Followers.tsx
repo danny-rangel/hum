@@ -4,12 +4,13 @@ import { useParams } from 'react-router-dom';
 import { getAPIURL } from '../config/api';
 
 import UserList from '../components/Users/UserList';
+import { User } from '../components/Users/UserList';
 
-const Followers = () => {
-    const [followers, setFollowers] = useState(null);
+const Followers: React.FC = () => {
+    const [followers, setFollowers] = useState<User[] | null>(null);
     const { id } = useParams();
 
-    const fetchFollowers = useCallback(async () => {
+    const fetchFollowers = useCallback(async (): Promise<any> => {
         const res = await MODAXIOS.get(getAPIURL() + `/api/followers/${id}`);
         setFollowers(res.data);
     }, [id]);
@@ -21,7 +22,7 @@ const Followers = () => {
     return (
         <div className="wrapper">
             <h1 style={{ textAlign: 'center' }}>followers</h1>
-            <UserList users={followers} />
+            <UserList users={followers!} />
         </div>
     );
 };

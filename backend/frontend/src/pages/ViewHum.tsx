@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import HumItem from '../components/Hums/HumItem';
 import styled from 'styled-components';
 import { getAPIURL } from '../config/api';
+import { Hum } from '../components/Hums/HumList';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -13,11 +14,11 @@ const StyledDiv = styled.div`
     width: 100%;
 `;
 
-const ViewHum = () => {
+const ViewHum: React.FC = () => {
     const { humID } = useParams();
-    const [hum, setHum] = useState(null);
+    const [hum, setHum] = useState<Hum | null>(null);
 
-    const fetchHum = useCallback(async () => {
+    const fetchHum = useCallback(async (): Promise<any> => {
         const res = await MODAXIOS.get(getAPIURL() + `/api/hum/${humID}`);
         setHum(res.data);
     }, [humID]);

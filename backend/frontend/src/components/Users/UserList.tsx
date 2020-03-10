@@ -18,9 +18,23 @@ const StyledDiv = styled.div`
     padding: 20px;
 `;
 
-const UserList = ({ users }) => {
-    const renderUsers = () => {
-        return users.map(user => {
+export interface User {
+    id: string;
+    username: string;
+    numposts: number;
+    avi: string;
+    followers: number;
+    following: number;
+    joined: Date;
+}
+
+interface UserListProps {
+    users?: User[];
+}
+
+const UserList: React.FC<UserListProps> = ({ users }) => {
+    const renderUsers = (): JSX.Element[] => {
+        return users!.map(user => {
             return <UserItem key={user.id} user={user} />;
         });
     };

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { Notification } from './NotificationList';
 
 const NotiItem = styled.div`
     padding: 10px 0;
@@ -11,7 +12,13 @@ const NotiItem = styled.div`
     }
 `;
 
-const NotificationItem = ({ notification }) => {
+interface NotificationItemProps {
+    notification: Notification;
+}
+
+const NotificationItem: React.FC<NotificationItemProps> = ({
+    notification
+}) => {
     const renderText = () => {
         if (notification.kind === 'like') {
             return (

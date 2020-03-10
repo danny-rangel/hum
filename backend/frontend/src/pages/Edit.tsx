@@ -9,6 +9,7 @@ import { AuthContext } from '../components/App';
 import { StyledButton } from '../components/Styled/StyledButton';
 import { StyledInput } from './SignUp';
 import { StyledAVI } from './Profile';
+import { User } from '../components/Users/UserList';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -18,24 +19,16 @@ const StyledDiv = styled.div`
     width: 100%;
 `;
 
-const Edit = () => {
+const Edit: React.FC = () => {
     const redirectContext = useContext(RedirectContext);
     const authContext = useContext(AuthContext);
-    const [user, setUser] = useState({
-        id: '',
-        username: '',
-        numposts: 0,
-        avi: 'https://hum.s3-us-west-1.amazonaws.com/default.png',
-        followers: 0,
-        following: 0,
-        joined: new Date()
-    });
+    const [user, setUser] = useState<User | null>(null);
     const [newUsername, setNewUsername] = useState<string | null>(null);
     const [newImage, setNewImage] = useState<File | null>(null);
     const { username } = useParams();
     let history = useHistory();
 
-    const fetchProfile = useCallback(async () => {
+    const fetchProfile = useCallback(async (): Promise<any> => {
         const res = await MODAXIOS.get(getAPIURL() + `/api/user/${username}`);
         setUser(res.data);
         setNewUsername(res.data.username);
@@ -45,7 +38,7 @@ const Edit = () => {
         setNewImage(e.target.files[0]);
     };
 
-    const saveUser = async () => {
+    const saveUser = async (): Promise<any> => {
         const formData = new FormData();
         if (newImage) {
             formData.append('avi', newImage, newImage.name);

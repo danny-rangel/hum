@@ -7,6 +7,7 @@ import UserList from '../components/Users/UserList';
 import { RedirectContext } from '../components/App';
 import { Redirect } from 'react-router-dom';
 import { getAPIURL } from '../config/api';
+import { User } from '../components/Users/UserList';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -17,22 +18,12 @@ const StyledDiv = styled.div`
     width: 100%;
 `;
 
-interface User {
-    id: string;
-    username: string;
-    numposts: number;
-    avi: string;
-    followers: number;
-    following: number;
-    joined: Date;
-}
-
-const Search = () => {
-    const [username, setUsername] = useState('');
+const Search: React.FC = () => {
+    const [username, setUsername] = useState<string>('');
     const [user, setUser] = useState<User | null>(null);
     const redirectContext = useContext(RedirectContext);
 
-    const searchUser = async e => {
+    const searchUser = async (e): Promise<any> => {
         e.preventDefault();
         const res = await MODAXIOS.post(getAPIURL() + `/api/search`, {
             username

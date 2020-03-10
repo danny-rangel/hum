@@ -40,11 +40,16 @@ const SidebarLI = styled.li`
     }
 `;
 
-const Sidebar = ({ show, setShowSidebar }) => {
+interface SidebarProps {
+    show?: boolean;
+    setShowSidebar: Function;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ show, setShowSidebar }) => {
     const authContext = useContext(AuthContext);
     const redirectContext = useContext(RedirectContext);
 
-    const logout = async () => {
+    const logout = async (): Promise<any> => {
         try {
             const res = await MODAXIOS.get(getAPIURL() + '/api/logout');
             authContext.authDispatch({

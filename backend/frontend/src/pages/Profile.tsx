@@ -7,6 +7,7 @@ import { StyledButton } from '../components/Styled/StyledButton';
 import { AuthContext } from '../components/App';
 import Spinner from '../components/Styled/Spinner';
 import { getAPIURL } from '../config/api';
+import { Hum } from '../components/Hums/HumList';
 
 import HumList from '../components/Hums/HumList';
 
@@ -38,9 +39,9 @@ interface User {
     joined: Date;
 }
 
-const Profile = () => {
+const Profile: React.FC = () => {
     const authContext = useContext(AuthContext);
-    const [hums, setHums] = useState<[] | null>(null);
+    const [hums, setHums] = useState<Hum[] | null>(null);
     const [user, setUser] = useState<User>({
         id: '',
         username: '',
@@ -73,7 +74,7 @@ const Profile = () => {
     );
 
     const fetchIsFollowing = useCallback(
-        async source => {
+        async (source): Promise<any> => {
             try {
                 const isFollowing = await MODAXIOS.get(
                     getAPIURL() + `/api/isfollowing/${user.id}`,
@@ -90,7 +91,7 @@ const Profile = () => {
     );
 
     const fetchHums = useCallback(
-        async source => {
+        async (source): Promise<any> => {
             try {
                 const res = await MODAXIOS.get(
                     getAPIURL() + `/api/hums/${username}`,
@@ -106,7 +107,7 @@ const Profile = () => {
         [username]
     );
 
-    const followUser = async () => {
+    const followUser = async (): Promise<any> => {
         try {
             setFollowersCount(followersCount + 1);
             const source = axios.CancelToken.source();
@@ -121,7 +122,7 @@ const Profile = () => {
         }
     };
 
-    const unfollowUser = async () => {
+    const unfollowUser = async (): Promise<any> => {
         try {
             setFollowersCount(followersCount - 1);
             const source = axios.CancelToken.source();

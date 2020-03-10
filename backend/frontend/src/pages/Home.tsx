@@ -9,6 +9,7 @@ import Spinner from '../components/Styled/Spinner';
 import { getAPIURL } from '../config/api';
 
 import HumList from '../components/Hums/HumList';
+import { Hum } from '../components/Hums/HumList';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -42,27 +43,19 @@ const StyledTextArea = styled.textarea`
     box-sizing: border-box;
 `;
 
-interface Hums {
-    id: String;
-    likes: Number;
-    posted: Date;
-    user_id: String;
-    username: String;
-}
-
-const Home = () => {
-    const [hums, setHums] = useState<Hums[] | null>(null);
+const Home: React.FC = () => {
+    const [hums, setHums] = useState<Hum[] | null>(null);
     const [content, setContent] = useState<string>('');
     const [charCount, setCharCount] = useState<number>(50);
     const [fetching, setFetching] = useState<boolean>(false);
     const redirectContext = useContext(RedirectContext);
 
-    const updateContent = e => {
+    const updateContent = (e): void => {
         setContent(e.target.value);
         setCharCount(50 - e.target.value.length);
     };
 
-    const fetchHums = async source => {
+    const fetchHums = async (source): Promise<any> => {
         try {
             const res = await MODAXIOS.get(getAPIURL() + '/api/hums', {
                 cancelToken: source.token
@@ -75,7 +68,7 @@ const Home = () => {
         }
     };
 
-    const postHum = async e => {
+    const postHum = async (e): Promise<any> => {
         e.preventDefault();
         try {
             setFetching(true);

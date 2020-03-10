@@ -7,6 +7,7 @@ import { getAPIURL } from '../config/api';
 
 import Spinner from '../components/Styled/Spinner';
 import NotificationList from '../components/Notifications/NotificationList';
+import { Notification } from '../components/Notifications/NotificationList';
 
 const StyledDiv = styled.div`
     display: flex;
@@ -24,11 +25,13 @@ const StyledDiv = styled.div`
     padding: 20px;
 `;
 
-const Notifications = () => {
-    const [notifications, setNotifications] = useState<[] | null>(null);
+const Notifications: React.FC = () => {
+    const [notifications, setNotifications] = useState<Notification[] | null>(
+        null
+    );
     const redirectContext = useContext(RedirectContext);
 
-    const fetchNotifications = async () => {
+    const fetchNotifications = async (): Promise<any> => {
         try {
             const res = await MODAXIOS.get(getAPIURL() + '/api/notifications');
             setNotifications(res.data);
