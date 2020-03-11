@@ -10,11 +10,12 @@ the backend was written in Golang
 
 database used was PostgreSQL
 
-redis was used for storing user sessions
+Redis was used for storing user sessions
 
 AWS S3 bucket was used for image storage
 
-the application is running in a docker container in an aws ec2 instance
-aws route53 was used for dns configuration with an aws classic load balancer in front of the ec2 instance
+the application is running in a docker container in an AWS EC2 instance
+
+AWS Route53 was used for dns configuration with an AWS classic load balancer in front of the EC2 instance
 
 [hum.com](https://www.thehumapp.com/)
