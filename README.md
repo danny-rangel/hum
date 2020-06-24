@@ -18,4 +18,3 @@ the application is running in a docker container in an AWS EC2 instance
 
 AWS Route53 was used for dns configuration with an AWS classic load balancer in front of the EC2 instance
 
-[hum.com](https://www.thehumapp.com/)
