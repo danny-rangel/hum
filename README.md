@@ -1,4 +1,4 @@
-# hum - ![youtube demo](https://youtu.be/Q72qRC1Hz2I)
+# hum - [youtube demo](https://youtu.be/Q72qRC1Hz2I)
 
 hum is a twitter-like social media app where users can post "hums" using 50 characters or less
 
